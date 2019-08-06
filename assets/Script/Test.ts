@@ -26,7 +26,7 @@ export default class NewClass extends cc.Component {
 
     // onLoad () {}
 
-    protected maxList: number = 15
+    protected maxList: number = 20
 
     private _nodelist: cc.Node[] = []
     private _startPos: cc.Vec2 = cc.v2(0,0);
@@ -80,7 +80,7 @@ export default class NewClass extends cc.Component {
         var ctrlAPos= cc.v2(0,0)
         var ctrlBPos= cc.v2(0,0)
 
-        ctrlAPos.x = startPos.x+(startPos.x-endPos.x)*0.1 // 这里我把参数做了微调，感觉这样更加符合杀戮尖塔的效果
+        ctrlAPos.x = startPos.x+(startPos.x-endPos.x)*0.1 
 
         ctrlAPos.y = endPos.y-(endPos.y-startPos.y)*0.2
         
@@ -104,8 +104,24 @@ export default class NewClass extends cc.Component {
             return cc.v2(x*t*t*t, y*t*t*t)
         }
 
+        let a: cc.Vec2 = endPos.sub(startPos)
+        let firstNodeAngle: number = Math.atan2(a.x, a.y) * 180 / Math.PI + 270 ;
+        (firstNodeAngle % 360 ) > 180 ? firstNodeAngle = 270 : firstNodeAngle = 90
 
-        // 根据贝塞尔曲线重新设置所有小箭头的位置
+        let updateAngle = (index: number)=>{
+            if (index === 0 ) {
+                this._nodelist[index].rotation = firstNodeAngle  
+            } else {
+                var current = this._nodelist[index]    
+                var last = this._nodelist[index - 1]     
+                var lenVec: cc.Vec2 = current.position.sub(last.position)  
+                
+                var ra = Math.atan2(lenVec.x , lenVec.y )
+                current.rotation = ra *180 /Math.PI + 270
+            }
+        }
+
+        // 根据贝塞尔曲线重新设置所有小箭头的位置及方向
         for (let i = 0; i < this._nodelist.length; i++) {
 
             let t = i / (this._nodelist.length - 1)
@@ -121,24 +137,11 @@ export default class NewClass extends cc.Component {
             let pos = this.node.convertToNodeSpaceAR(totalPos)
             node.position = pos
             node.active = true
-            // node.opacity = 255 / (this.maxList - i ) 
-            this.updateAngle(i)
+            node.opacity = 255 / (this.maxList - i ) + 160
+            updateAngle(i)
         }
 
-    }
-
-    updateAngle(index: number): void {
-        if (index === 0 ) {
-            this._nodelist[index].rotation = 270    //第一个小箭头就让他固定朝上好了
-        } else {
-            var current = this._nodelist[index]    //当前的小箭头
-            var last = this._nodelist[index - 1]     //前一个小箭头
-            var lenVec: cc.Vec2 = current.position.sub(last.position)  //两个箭头连线的向量
-            
-            var ra = Math.atan2(lenVec.x , lenVec.y )
-            current.rotation = ra *180 /Math.PI + 270
-        }
-    }   
+    } 
     
 
     // update (dt) {}
