@@ -1,6 +1,6 @@
-import Gustures from "./gusture";
+import Gustures from "../Gusturelib/gusture";
 
-var g = require("./gusture.js");
+var g = require("../Gusturelib/gusture.js");
 
 export type gPoint = {
     x: number,
