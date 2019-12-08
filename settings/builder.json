@@ -1,50 +1,43 @@
 {
-  "android-instant": {
-    "REMOTE_SERVER_ROOT": "",
-    "host": "",
-    "pathPattern": "",
-    "recordPath": "",
-    "scheme": "https",
-    "skipRecord": false
-  },
-  "appBundle": false,
-  "baidugame": {
-    "REMOTE_SERVER_ROOT": "",
-    "appid": "testappid",
-    "orientation": "portrait",
-    "subContext": ""
-  },
-  "encryptJs": true,
   "excludeScenes": [],
-  "fb-instant-games": {},
-  "includeSDKBox": false,
-  "inlineSpriteFrames": true,
-  "inlineSpriteFrames_native": true,
-  "md5Cache": true,
-  "mergeStartScene": true,
-  "optimizeHotUpdate": false,
   "orientation": {
     "landscapeLeft": true,
     "landscapeRight": true,
     "portrait": false,
     "upsideDown": false
   },
-  "packageName": "org.cocos2d.SlayArrow_by_cocos",
-  "qqplay": {
-    "REMOTE_SERVER_ROOT": "",
-    "orientation": "portrait",
-    "zip": false
+  "packageName": "org.cocos2d.helloworld",
+  "startScene": "41af5e4a-963e-46a9-95ee-2c30389f5e8e",
+  "title": "Maze",
+  "webOrientation": "landscape",
+  "includeSDKBox": false,
+  "inlineSpriteFrames": true,
+  "inlineSpriteFrames_native": true,
+  "mergeStartScene": true,
+  "optimizeHotUpdate": false,
+  "md5Cache": true,
+  "encryptJs": true,
+  "xxteaKey": "8fd06101-7a76-47",
+  "zipCompressJs": true,
+  "fb-instant-games": {},
+  "android": {
+    "packageName": "org.cocos2d.helloworld"
   },
-  "startScene": "e55117a8-7c53-4597-8e89-747b5d058b11",
-  "title": "SlayArrow_by_cocos",
-  "webOrientation": "auto",
-  "wechatgame": {
-    "REMOTE_SERVER_ROOT": "",
-    "appid": "wx6ac3f5090a6b99c5",
-    "orientation": "portrait",
-    "separate_engine": false,
-    "subContext": ""
+  "ios": {
+    "packageName": "org.cocos2d.helloworld"
   },
-  "xxteaKey": "907e9ef4-6703-44",
-  "zipCompressJs": true
+  "mac": {
+    "packageName": "org.cocos2d.helloworld"
+  },
+  "win32": {},
+  "android-instant": {
+    "REMOTE_SERVER_ROOT": "",
+    "host": "",
+    "packageName": "org.cocos2d.helloworld",
+    "pathPattern": "",
+    "recordPath": "",
+    "scheme": "https",
+    "skipRecord": false
+  },
+  "appBundle": false
 }
