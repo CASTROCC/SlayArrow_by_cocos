@@ -228,6 +228,16 @@ export default class MathUtils {
         return   angle * Math.PI / 180;
     }
 
+      /**
+     * 线性
+     * @param src 
+     * @param des 
+     * @param t 
+     */
+    public static lerp(src: number, des: number, t: number): number {
+        return des * t + src * (1.0 - t);
+    }
+
     /**
      * 获取数组总和
      * @param array 

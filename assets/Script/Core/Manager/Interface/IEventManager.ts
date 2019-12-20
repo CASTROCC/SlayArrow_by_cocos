@@ -11,4 +11,6 @@ interface IEventManager {
     dispatchEventListener(EventName: string, ...args: any[]): void;
     /**移除所有事件(常规) */
     removeAllEventListener(): void;
+    /**注册单次事件 */
+    once(EventName: string, ...args: any[]): void;
 }

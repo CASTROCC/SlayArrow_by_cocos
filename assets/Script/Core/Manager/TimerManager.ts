@@ -1,5 +1,6 @@
 import GameUtils from "../Utils/GameUtils"
 import MathUtils from "../Utils/MathUtils"
+import { SingleBase } from "../Utils/SingleBase";
 
 export class TimerHandler {
 	/**执行间隔*/
@@ -29,7 +30,7 @@ export class TimerHandler {
 	}
 }
 
-export default class TimerManager {
+export default class TimerManager extends SingleBase{
 
 	private _handlers: TimerHandler[];
 	private _currTime: number;
@@ -38,15 +39,10 @@ export default class TimerManager {
     private nexthandles: TimerHandler[];
     protected _HandlerPool: TimerHandler[];
 	protected _Timer: cc.Scheduler;
-	
-    private static _instance: TimerManager;
-    public static ins(): TimerManager {
-        if (!this._instance)
-            this._instance = new TimerManager();
-        return this._instance;
-    }
 
 	constructor() {
+		super();
+		
 		this._handlers = [];
         this.nexthandles = null;
         this._HandlerPool = [];

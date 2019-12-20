@@ -1,12 +1,14 @@
 import GameUtils from "../Utils/GameUtils";
 import TimerManager from "./TimerManager";
+import { SingleBase } from "../Utils/SingleBase";
 /**
  * created by superman
  * 消息代理及分帧处理类
  */
 export type Event = {
     Func: Function,
-    thiz: any
+    thiz: any,
+    isOnce: boolean
 }
 
 export class Msg {
@@ -18,8 +20,7 @@ export class Msg {
         this.args = null;
     }
 }
-export default class EventManager implements IEventManager {
-    // addOnceEventListener
+export default class EventManager extends SingleBase implements IEventManager {
     private _eventsPool: {[name: string]: Event[]};
     private _nextFrameEventsPool: {[name: string]: Event[]};    
     private _dealEvents: Msg[];
@@ -27,14 +28,8 @@ export default class EventManager implements IEventManager {
     protected _MaxDealConst: number = 500;
     protected _msgPool: Msg[];
 
-    private static _instance: EventManager;
-    public static ins(): EventManager {
-        if (!this._instance)
-            this._instance = new EventManager();
-        return this._instance;
-    }
-
     constructor () {
+        super();
         this._eventsPool = {};
         this._nextFrameEventsPool = {};
         this._dealEvents = [];
@@ -55,7 +50,8 @@ export default class EventManager implements IEventManager {
 
         let event: Event = {
             Func: Func,
-            thiz: thiz
+            thiz: thiz,
+            isOnce: false
         } as Event;
         
         let events: Event[] = this._getEventListener(EventName, this._eventsPool);
@@ -68,9 +64,31 @@ export default class EventManager implements IEventManager {
     }   
 
 
+    /**
+     * 注册单次执行事件
+     * @param EventName 
+     * @param Func 
+     * @param thiz 
+     */
     public once(EventName: string, Func: Function, thiz: any): void {
-        let _func = function () {
-            // Func.apply(this,)
+
+        if (!Func || !thiz) {
+            console.error("args is Empty!");
+            return;
+        }
+
+        let event: Event = {
+            Func: Func,
+            thiz: thiz,
+            isOnce: true
+        } as Event;
+        
+        let events: Event[] = this._getEventListener(EventName, this._eventsPool);
+        if (events) {
+            events.push(event);
+        } else {
+            this._eventsPool[EventName] = [];
+            this._eventsPool[EventName].push(event);
         }
     }
 
@@ -89,7 +107,7 @@ export default class EventManager implements IEventManager {
 
         let event: Event = {
             Func: Func,
-            thiz: thiz
+            thiz: thiz,
         } as Event;
         
         let events: Event[] = this._getEventListener(EventName, this._nextFrameEventsPool);
@@ -138,9 +156,13 @@ export default class EventManager implements IEventManager {
      */
     public dispatchEventListener(EventName: string, ...args: any[]): void {
         let events: Event[] = this._getEventListener(EventName, this._eventsPool);
-        for (const e of events) {
-            if (e.Func && e.thiz) 
+        for (let i = events.length - 1; i >= 0 ; i--) {
+            let e = events[i];
+            if (e.Func && e.thiz)
                 e.Func.apply(e.thiz, args);
+            
+            if (e.isOnce)
+                events.splice(i,1);
         }
     }
 

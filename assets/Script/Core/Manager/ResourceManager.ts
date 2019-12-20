@@ -5,6 +5,7 @@
 */
 import G from "./G";
 import { IResourceManager } from "./Interface/IResourceManager";
+import { SingleBase } from "../Utils/SingleBase";
 
 export enum loadingType
 {
@@ -13,7 +14,7 @@ export enum loadingType
     Panel = 1 << 2, // 面板等待
 }
 
-export default class ResourceManager implements IResourceManager{
+export default class ResourceManager extends SingleBase implements IResourceManager{
 
     private static DealInterval: number = 30000;
     
@@ -25,17 +26,11 @@ export default class ResourceManager implements IResourceManager{
 
     private _loadingType: loadingType;
     private _AssetsRef: {[name: string]: number};
+    // private _Assets: 
 
     constructor() {
+        super();
         this._AssetsRef = {};
-        G.TimerMgr.doTimer(ResourceManager.DealInterval, 0, this._dealAssets, this);
-    }
-
-    private static _instance: ResourceManager;
-    public static ins(): ResourceManager {
-        if (!this._instance)
-            this._instance = new ResourceManager();
-        return this._instance;
     }
     
     /**
@@ -139,9 +134,12 @@ export default class ResourceManager implements IResourceManager{
             console.error(error);
             return;
         }    
+        
         this._updateAssetRef(asset, (item: string) => {
             this._AssetsRef[item] ? ++this._AssetsRef[item] : this._AssetsRef[item] = 1;    
         });
+        if (Object.keys(this._AssetsRef).length != 0)
+            G.TimerMgr.doTimer(ResourceManager.DealInterval, 0, this._dealAssets, this);
         // if (this._loadingType === loadingType.Panel || this._loadingType === loadingType.Circle)
             // TODO
         if (this._completeHandler) 

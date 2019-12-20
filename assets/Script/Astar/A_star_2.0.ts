@@ -1,5 +1,5 @@
-import { MapType } from "../Maze";
 import { BinaryHeap } from "./BinaryHeap";
+import { MapType } from "../Game/Map/Map";
 /**
  * A* 进阶
  * 1. 使用二叉堆作为开放列表
@@ -190,7 +190,7 @@ export default class Astar_s {
             return 1.0;
     }
 
-    public moveToward(start: cc.Vec2, finish: cc.Vec2): cc.Vec2[] {
+    public Search(start: cc.Vec2, finish: cc.Vec2): cc.Vec2[] {
         let s: number = Date.now();
         this._open.Clear();
         this._close = [];
@@ -221,7 +221,7 @@ export default class Astar_s {
                         gird.h = Math.abs(distancePoint.x) + Math.abs(distancePoint.y); 
                         this._open.Insert(gird);
                     } else {
-                        if (currentStep.g + moveConst < gird.g) {  // 折返, 避免全局暴力搜索
+                        if (currentStep.g + moveConst < gird.g) { 
                             gird.g = currentStep.g + moveConst; 
                         }
                     }

@@ -2,38 +2,27 @@ import EventManager from "./EventManager";
 import GustureUtil from "../Utils/GustureUtils";
 import TimerManager from "./TimerManager";
 import ResourceManager from "./ResourceManager";
+import SceneManager from "./SceneManager";
 
 export default class G {
 
-    private static _EventMgr: EventManager;
-
-    private static _GusterMgr: GustureUtil;
-
-    private static _TimerMgr: TimerManager;
-
-    private static _ResMgr: ResourceManager;
+    public static get SceneMgr() {
+        return SceneManager.ins();
+    }
 
     public static get EventMgr() {
-        if (!this._EventMgr)
-            this._EventMgr = EventManager.ins();
-        return this._EventMgr;
+        return EventManager.ins();
     }
 
     public static get GusterMgr() {
-        if (!this._GusterMgr)
-            this._GusterMgr = GustureUtil.ins();
-        return this._GusterMgr;
+        return GustureUtil.ins();
     }
 
     public static get TimerMgr() {
-        if (!this._TimerMgr)
-            this._TimerMgr = TimerManager.ins();
-        return this._TimerMgr;
+        return TimerManager.ins();
     }
 
     public static get ResMgr() {
-        if (!this._ResMgr)
-            this._ResMgr = ResourceManager.ins();
-        return this._ResMgr;
+        return ResourceManager.ins();
     }
 }

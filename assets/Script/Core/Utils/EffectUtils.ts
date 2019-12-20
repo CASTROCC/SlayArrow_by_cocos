@@ -1,26 +1,26 @@
 import GameUtils from "./GameUtils";
 
 export default class EffectUtils {
+
     /**
      * 两节点间相互淡入淡出效果
      * @param start 淡出节点
      * @param end 淡入节点
      */
-
-    public static fadeToggleNode(start: cc.Node, end: cc.Node, time: number = 1.0, call?: () => void, target?: any) {
+    public static fadeToggleNode(start: cc.Node, end: cc.Node, time: number = 1.0, call?: (node?: cc.Node) => void, target?: any) {
         let Ain = cc.fadeIn(time);
-        let Aout = cc.fadeOut(time)
-        start.runAction(Aout)
+        let Aout = cc.fadeOut(time);
+        start.runAction(Aout);
         let a3 = cc.callFunc(() => {
             start.stopAction(Aout)
-            start.active = false
-            end.active = true
+            start.active = false;
+            end.active = true;
             if (call && target) {
-                call.call(target)
+                call.call(target, start);
             }
         }, this);
-        end.active = true
-        end.opacity = 0
+        end.active = true;
+        end.opacity = 0;
         end.runAction(cc.sequence(Ain, a3))
     }
 
@@ -51,7 +51,7 @@ export default class EffectUtils {
      * @param repeatCount 
      */
     public static shakeFrameId = null;
-    public static shakeNode(node: cc.Node, call?: () => void, target?: any, repeatCount: number = 3): void {
+    public static shakeNode(node: cc.Node, call?: (node?: cc.Node) => void, target?: any, repeatCount: number = 3): void {
         if (this._isShaking) {
             return;
         }
@@ -82,7 +82,7 @@ export default class EffectUtils {
      * @param thiz 
      */
     public static scaleFrameId = null;
-    public static scaleNodeWidthByMaxNum(node: cc.Node, maxNum: number, addLerp: number = 20, peroty: string = "width", func?: () => void, thiz?: any,): void {
+    public static scaleNodeWidthByMaxNum(node: cc.Node, maxNum: number, addLerp: number = 20, peroty: string = "width", func?: (node?: cc.Node) => void, thiz?: any,): void {
         if (this._isonScale) {
             return;
         }
@@ -131,43 +131,43 @@ export default class EffectUtils {
         if (!this._isShaking) return;
         this._node.position = this._lastPos;
         window.cancelAnimationFrame(this.shakeFrameId);
-        if (this._callFunc && this._callTarget) this._callFunc.call(this._callTarget)
-        this._isShaking = false
-        this._maxCount = 0
-        this._shakeCount = 0
-        this._callFunc = null
-        this._callTarget = null
-        this._lastPos = null
-        this._node = null
+        if (this._callFunc && this._callTarget) this._callFunc.call(this._callTarget);
+        this._isShaking = false;
+        this._maxCount = 0;
+        this._shakeCount = 0;
+        this._callFunc = null;
+        this._callTarget = null;
+        this._lastPos = null;
+        this._node = null; 
     }
 
-    public static _isBlinking: boolean = false
-    public static _blinkingCount: number = 0
-    public static _blinkNode: cc.Node = null
-    public static _blinkFunc: () => void
-    public static _blinkcallTarget: any = null
-    public static _blinkFlag: boolean = false
-    public static _disBlink: number = 0
-    public static _totalRepeat: number = 0
+    public static _isBlinking: boolean = false;
+    public static _blinkingCount: number = 0;
+    public static _blinkNode: cc.Node = null;
+    public static _blinkFunc: () => void;
+    public static _blinkcallTarget: any = null;
+    public static _blinkFlag: boolean = false;
+    public static _disBlink: number = 0;
+    public static _totalRepeat: number = 0;
 
     // 闪烁节点
     public static onBlink() {
         if (this._totalRepeat >= this._blinkingCount) {
-            if (!this._blinkNode || !this._isBlinking) return
-            this.stopBlink()
+            if (!this._blinkNode || !this._isBlinking) return;
+            this.stopBlink();
             return;
         }
         if (this._blinkFlag) {
-            this._blinkNode.opacity += this._disBlink
+            this._blinkNode.opacity += this._disBlink;
             if (this._blinkNode.opacity >= 255) {
-                this._totalRepeat++
+                this._totalRepeat++;
                 this._blinkFlag = false;
             }
 
         } else {
-            this._blinkNode.opacity -= this._disBlink
+            this._blinkNode.opacity -= this._disBlink;
             if (this._blinkNode.opacity <= 0) {
-                this._totalRepeat++
+                this._totalRepeat++;
                 this._blinkFlag = true;
             }
         }
@@ -198,9 +198,9 @@ export default class EffectUtils {
      * @param disBlink 差值
      */
     public static blinkFrameId = null;
-    public static blinkNodebyOpcity(node: cc.Node, call?: () => void, target: any = null, repeatCount: number = 3, disBlink: number = 25): void {
+    public static blinkNodebyOpcity(node: cc.Node, call?: (node?: cc.Node) => void, target: any = null, repeatCount: number = 3, disBlink: number = 25): void {
         if (!node || this._isBlinking) {
-            return
+            return;
         }
         this._blinkingCount = repeatCount;
         this._blinkNode = node;
@@ -221,11 +221,9 @@ export default class EffectUtils {
      */
     public static cutShortWidthByEase(node: cc.Node, duration: number, func?: Function, thiz?: any) {
         let finished = cc.callFunc(() => {
-            if (func && thiz) func.call(thiz);
+            if (func && thiz) func.call(thiz, node);
         }, this);
-        setInterval(()=>{
 
-        }, );
         let act: cc.Action = cc.sequence(cc.scaleTo( duration, 0, 1), finished);
         node.runAction(act);
     }
@@ -234,14 +232,14 @@ export default class EffectUtils {
      * 节点淡入出效果
      * @param node 淡入节点
      */
-    public static fadeNode(node: cc.Node, call?: () => void, target?: any, constime: number = 0.5, isReverse: boolean = false) {
+    public static fadeNode(node: cc.Node, call?: (node?: cc.Node) => void, target?: any, constime: number = 0.5, isReverse: boolean = false) {
         if (!node) {
             console.error(`fadeNode error, not node`)
             return
         }
         let opa: number = 255;
         if (!isReverse) {
-            node.opacity = 0
+            node.opacity = 0;
             node.active = true;
             opa = 255;
         } else {
@@ -250,7 +248,7 @@ export default class EffectUtils {
             opa = 0;
         }
         let finished = cc.callFunc(() => {
-            if (call && target) call.call(target);
+            if (call && target) call.call(target, node);
         }, this);
         let act: cc.Action = cc.sequence(cc.fadeTo( constime, opa), finished);
         node.runAction(act);
@@ -287,7 +285,7 @@ export default class EffectUtils {
         let finished = cc.callFunc(() => {
             node.zIndex = lastIndex
             if (callBack && target) {
-                callBack.call(target);
+                callBack.call(target, node);
             }
         }, target);
         if (isScale) {
@@ -318,7 +316,7 @@ export default class EffectUtils {
      * @param func 
      * @param thiz 
      */
-    public static shakeMoveByRotate(node: cc.Node, endPos: cc.Vec2, func?: () => void, thiz?: any) {
+    public static shakeMoveByRotate(node: cc.Node, endPos: cc.Vec2, func?: (n?: cc.Node) => void, thiz?: any) {
         if (!node) {
             cc.log("shakeByRotate is not node!");
             return;
@@ -328,7 +326,7 @@ export default class EffectUtils {
         let actMove = cc.moveTo(2.5, endPos);
         let actFunc = cc.callFunc(()=>{
             if (func && thiz) {
-                func.call(thiz);
+                func.call(thiz, node);
             }
         }, this);
         let act3 = cc.sequence(actMove, actFunc);
@@ -381,12 +379,12 @@ export default class EffectUtils {
      * 节点拉宽
      * @param node 目标节点
      */
-    public static scaleWidth(node: cc.Node, func?: () => void, thiz?: any, sx: number = 1, time: number = .8): void {
+    public static scaleWidth(node: cc.Node, func?: (n?: cc.Node) => void, thiz?: any, sx: number = 1, time: number = .8): void {
         if (!node) return;
         node.scaleX = 0;
         let act = cc.scaleTo(time, sx);
         let a = cc.callFunc(()=>{
-            func.call(thiz);
+            func.call(thiz, node);
         }, this);
         let s = cc.sequence([act,a]);
         node.runAction(s);
@@ -401,7 +399,7 @@ export default class EffectUtils {
      * @param bigTime 
      * @param smallTime 
      */
-    public static showPanelByScale(node: cc.Node, call?: () => void, target?: any, times: number = 2, bigTime: number = 0.1, smallTime: number = 0.2): any {
+    public static showPanelByScale(node: cc.Node, call?: (n?: cc.Node) => void, target?: any, times: number = 2, bigTime: number = 0.1, smallTime: number = 0.2): any {
         if (!node) return
         node.scale = 0
         if(!node.active) node.active = true;
@@ -410,7 +408,7 @@ export default class EffectUtils {
         let sq = cc.sequence(act, act2);
         let repeat = sq.repeat(times);
         let call1 = cc.callFunc(() => {
-            if (call && target) call.call(target)
+            if (call && target) call.call(target, node)
         });
         let sq2 = cc.sequence(repeat, call1);
         return node.runAction(sq2);
@@ -423,7 +421,7 @@ export default class EffectUtils {
      * @param target 
      * @param times 
      */
-    public static scaleRepeatAction(node: cc.Node, call?: () => void, target?: any, times: number = 2, bigTime: number = 0.1, 
+    public static scaleRepeatAction(node: cc.Node, call?: (n?: cc.Node) => void, target?: any, times: number = 2, bigTime: number = 0.1, 
                     smallTime: number = 0.2, eScaleRate: number = 0.8): any {
         if (!node) return
         let sx: number = node.scaleX , 
@@ -439,7 +437,7 @@ export default class EffectUtils {
         let call1 = cc.callFunc(() => {
             node.scaleX = sx
             node.scaleY = sy
-            if (call && target) call.call(target)
+            if (call && target) call.call(target, node);
         })
         let sq2 = cc.sequence(repeat, call1)
         return node.runAction(sq2)
@@ -451,15 +449,15 @@ export default class EffectUtils {
      * @param call 
      * @param target 
      */
-    public static blinkAction(node: cc.Node, call?: () => void, target?: any): any {
+    public static blinkAction(node: cc.Node, call?: (n?: cc.Node) => void, target?: any): any {
         if (!node) return
         node.opacity = 255;
         let act = cc.blink(2, 6)
         let calFunc = cc.callFunc(() => {
-            if (call && target) call.call(target)
+            if (call && target) call.call(target, node);
         }, this)
-        let tact = cc.sequence(act, calFunc)
-        return node.runAction(tact)
+        let tact = cc.sequence(act, calFunc);
+        return node.runAction(tact);
     }
 
     /**
@@ -470,7 +468,7 @@ export default class EffectUtils {
      */
     public static setGrayNode(node: cc.Node, isGray: boolean, isInfluenclick: boolean = false) {
 
-        let temp: cc.Node[] = GameUtils.getAllChildNode(node);
+        let temp: cc.Node[] = GameUtils.GetAllChildNode(node);
     
         for (let i = 0; i < temp.length; i++) {
             const node: cc.Node = temp[i];
@@ -506,7 +504,7 @@ export default class EffectUtils {
         let act_3: any = cc.scaleTo(comeTimes, 1, 1);
         let act_call: any = cc.callFunc(()=>{
             if (func && handler) {
-                func.call(handler);
+                func.call(handler, target);
             }
         }, target);
         return target.runAction(cc.sequence([act_1,act_2, act_3, act_call]));

@@ -1,4 +1,5 @@
 import Gustures from "../Gusturelib/gusture";
+import { SingleBase } from "./SingleBase";
 
 var g = require("../Gusturelib/gusture.js");
 
@@ -7,17 +8,12 @@ export type gPoint = {
     y: number
 }
 
-export default class GustureUtil {
+export default class GustureUtil extends SingleBase {
 
-    private static _ins: GustureUtil;
-    
-    public static ins(): GustureUtil {
-        if (!this._ins)
-            this._ins = new GustureUtil();
-        
-        return this._ins;
+    constructor () {
+        super();
     }
-
+    
     private _testPoints: Gustures.Point[] = [];   
 
     /**
