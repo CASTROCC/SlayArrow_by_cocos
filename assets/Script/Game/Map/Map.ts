@@ -101,8 +101,6 @@ export class Map extends BaseObj {
             
         else if(val === MapType.NotCorss ) node = cc.instantiate(this._GirdType[0]);
             // sprite.spriteFrame = this._GirdType[0];
-            
-            
 
         node.position = GameUtils.TransGirdPosition(w_Pos, h_Pos, MapConfig.GirdWidth, MapConfig.GirdHeight);
         return node;

@@ -10,6 +10,35 @@ export default class AudioUtils {
     private static _playingAudios: {
         [key: string]: callbacks
     } = {};
+
+
+    /**
+     * 创建音频， 并返回音频分析器
+     * @param clips 
+     */
+    public static PlayAudioByAnalyser(clips: cc.AudioClip ): AnalyserNode {
+        let audioContext = new AudioContext();
+        let audioBuffer: AudioBufferSourceNode = audioContext.createBufferSource();
+
+        if (typeof clips === "string") {
+            (<any>cc.AudioClip)._loadByUrl(clips, function (err, clip) {
+                if (clip) {
+                    clips = clip;
+                }
+            });
+        }
+        
+        audioBuffer.buffer = (clips as any)._audio;
+        // 创建分析器
+        let analyser = audioContext.createAnalyser();
+        // 分析精度
+        analyser.fftSize = 256;
+        // 链接分析器
+        audioBuffer.connect(analyser);  
+        analyser.connect(audioContext.destination);
+        audioBuffer.start(0);
+        return <any>analyser;        
+    }
     
     /**
      * 停止所有正在播放音乐

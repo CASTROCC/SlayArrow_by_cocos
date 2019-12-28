@@ -1,0 +1,1 @@
+cc.misc.ENABLE_WEBGL_ANTIALIAS = true;

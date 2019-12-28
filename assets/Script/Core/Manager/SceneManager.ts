@@ -9,6 +9,7 @@ export default class SceneManager extends SingleBase {
     private _effectLayer: cc.Node;
     private _panelLayer: cc.Node;
     private _mapCamera: cc.Node;
+    private _mCamera: cc.Camera;
     private _windowSize: cc.Size;
 
     public get WindowSize(): cc.Size {
@@ -60,10 +61,20 @@ export default class SceneManager extends SingleBase {
 
     private _InitMapCamera(): void {
         this._mapCamera = new cc.Node();
-        let roleCamera: cc.Camera = this._mapCamera.addComponent(cc.Camera);
-        roleCamera.cullingMask = 1; // 仅仅只渲染Map
+        this._mCamera = this._mapCamera.addComponent(cc.Camera);
+        this._mCamera.cullingMask = 1; // 仅仅只渲染Map
         this._mapCamera.name = "MapCamera";
         this.BattleLayer.addChild(this._mapCamera);
+    }
+
+    /**
+     * 将屏幕坐标转换为地图坐标
+     * @param pos 
+     */
+    public ConverToMapPos(pos: cc.Vec2): cc.Vec2 {
+        pos.x = pos.x + (this._mapCamera.position.x - (this._windowSize.width >> 1)) * this._mCamera.zoomRatio ;
+        pos.y = (this._windowSize.height - pos.y) - (this._mapCamera.position.y + (this._windowSize.height >> 1)) * this._mCamera.zoomRatio;
+        return pos;
     }
 
     private _InitBattle(): void {

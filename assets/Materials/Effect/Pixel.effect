@@ -13,6 +13,7 @@ CCEffect %{
       properties:
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
+        range: { value: 1.0}
 }%
 
 
@@ -61,6 +62,10 @@ CCProgram fs %{
   #if USE_TEXTURE
   in vec2 v_uv0;
   uniform sampler2D texture;
+
+  uniform RANGE {
+    float range;
+  }
   #endif
 
   void main () {
@@ -73,10 +78,10 @@ CCProgram fs %{
     //   #endif
     // #endif
 
-    float x = floor(v_uv0.x * 40.0);
-    float y = floor(v_uv0.y * 40.0);
+    float x = floor(v_uv0.x * range);
+    float y = floor(v_uv0.y * range);
 
-    o += texture(texture, vec2(x * 0.025, y * 0.025));
+    o += texture(texture, vec2(x * (1.0 / range), y * (1.0 / range)));
 
     o *= v_color;
 

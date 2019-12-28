@@ -8,7 +8,12 @@
       false
     ]
   ],
-  "excluded-modules": [],
+  "excluded-modules": [
+    "Collider",
+    "Physics",
+    "3D",
+    "3D Primitive"
+  ],
   "group-list": [
     "Map",
     "UI"

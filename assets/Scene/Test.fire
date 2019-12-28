@@ -712,13 +712,13 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+        "__uuid__": "7f286eab-6d69-4df4-9e63-5c805e61ef1a"
       }
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "067f2479-9618-45de-8ebc-b75b932556e8"
+      "__uuid__": "b8e11eba-07c7-4830-ba30-12560850f0d6"
     },
     "_type": 0,
     "_sizeMode": 0,

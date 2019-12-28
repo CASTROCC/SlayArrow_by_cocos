@@ -1,5 +1,6 @@
 import MathUtils from "./MathUtils";
 import { BaseObj } from "../../Game/Obj/BaseObj";
+import MapMgr from "../../Game/Map/MapMgr";
 
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
@@ -20,6 +21,11 @@ export default class FollowCamera extends cc.Component {
     // target: cc.Node = null;
 
     private _target: BaseObj;
+    private _winSize: cc.Size;
+
+    start() {
+        this._winSize = cc.director.getWinSize();
+    }
 
     onEnable() {
         // cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, (e: cc.Event.EventKeyboard)=>{
@@ -41,12 +47,11 @@ export default class FollowCamera extends cc.Component {
 
         if (this._target) {
             
-            let targetX: number = Math.max(1920/2 , this._target.x);
-            let targetY: number = Math.min(-(1080/2), this._target.y);
+            let targetX: number = Math.max(this._winSize.width >> 1, this._target.x);
+            let targetY: number = Math.min(-(this._winSize.height >> 1), this._target.y);
 
-            // targetX = Math.min(this._m)
-            // maxtoLimited
-
+            targetX = Math.min(targetX, MapMgr.Ins.Map.width - (this._winSize.width >> 1));
+            targetY = Math.max(targetY, ~(MapMgr.Ins.Map.height - (this._winSize.height >> 1)) + 1)
             this.node.x = MathUtils.lerp(this.node.x, targetX, dt * 10);
             this.node.y = MathUtils.lerp(this.node.y, targetY, dt * 10);
         }

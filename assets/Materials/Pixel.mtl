@@ -11,9 +11,8 @@
     "USE_ALPHA_TEST": false
   },
   "_props": {
-    "texture": {
-      "__uuid__": "362946d2-cba9-47c7-9870-186422953406"
-    },
-    "alphaThreshold": 0.5
+    "texture": null,
+    "alphaThreshold": 0.5,
+    "range": 20
   }
 }

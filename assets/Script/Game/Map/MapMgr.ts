@@ -26,6 +26,10 @@ export default class MapMgr {
 
     public static Ins: MapMgr = new MapMgr();
 
+    public get Map(): Map {
+        return this._Map;
+    }
+
     public loadMapRes(): void {
         G.ResMgr.loadResByDir("Map/1001", loadingType.None, (res: any) => {
             let temp = [];
@@ -61,14 +65,12 @@ export default class MapMgr {
 
     private clickMap(e: cc.Event.EventTouch): void {
 
-        let worldPos: cc.Vec2 = e.getLocation();
-        let clickPos: cc.Vec2 = this._Map.convertToNodeSpaceAR(worldPos);
-        
-        // (<SceneManager>G.SceneMgr).MapCamera.getWorldToCameraPoint(worldPos, clickPos);
+        let clickPos: cc.Vec2 = e.getLocation();
 
-        // clickPos = this._Map.convertToNodeSpaceAR(clickPos);
-        let x: number = Math.floor(clickPos.x / MapConfig.GirdWidth);
-        let y: number = Math.floor(((1080 - clickPos.y) ) / MapConfig.GirdHeight);
+        let mapPos = G.SceneMgr.ConverToMapPos(clickPos);
+        let x = Math.floor(mapPos.x / MapConfig.GirdWidth);
+        let y = Math.floor(mapPos.y / MapConfig.GirdHeight);
+
         if(this._SourceData[y][x] === MapType.NotCorss ) {
             cc.error("can't find road.");
             return ;
