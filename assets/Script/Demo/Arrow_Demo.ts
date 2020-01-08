@@ -1,5 +1,5 @@
 import SlayArrow from "../Core/Utils/SlayArrow";
-import G from "../Core/Manager/G";
+import TimerManager from "../Core/Manager/TimerManager";
 
 // Learn TypeScript:
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
@@ -29,7 +29,7 @@ export default class NewClass extends cc.Component {
     private _slayArraw: SlayArrow;
 
     onLoad() {
-        G.TimerMgr.doNext(()=>{
+        TimerManager.ins().doNext(()=>{
             console.log("timerManager Test.");
         }, this);
     }

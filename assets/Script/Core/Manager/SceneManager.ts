@@ -1,5 +1,4 @@
 import { SingleBase } from "../Utils/SingleBase";
-import MathUtils from "../Utils/MathUtils";
 import MapConfig from "../../Game/Map/MapConfig";
 
 export default class SceneManager extends SingleBase {

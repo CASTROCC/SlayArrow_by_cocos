@@ -1,5 +1,5 @@
 import { BinaryHeap } from "./BinaryHeap";
-import { MapType } from "../Game/Map/Map";
+import { Tile, TileType } from "../Core/Dungeon/DungeonFactory";
 /**
  * A* 进阶
  * 1. 使用二叉堆作为开放列表
@@ -29,7 +29,7 @@ export class Gird {
     private _moveConst: number;
     private _position: cc.Vec2;
     private _last: Gird;
-    private _GirdType: MapType;
+    private _GirdType: Tile;
 
     public neighbours: Neighbour[]; // 相邻节点
 
@@ -77,7 +77,7 @@ export class Gird {
         return this._g + this._h ;
     }
 
-    constructor(postion: cc.Vec2, girdType?: MapType) {
+    constructor(postion: cc.Vec2, girdType?: Tile) {
         if(postion instanceof cc.Vec2) {
             this._position = postion;
             this._GirdType = girdType;
@@ -114,7 +114,7 @@ export default class Astar_s {
         this._open = new BinaryHeap(v => v.f);
     }
 
-    public set MapVo(v: number[][]) {
+    public set MapVo(v: TileType[][]) {
         if(!v) return;
 
         this._mapVo = [];
@@ -123,9 +123,9 @@ export default class Astar_s {
 
         for (let i = 0; i < v.length; i++) {
             this._mapVo[i] = [];
-            const map: number[] = v[i];
+            const map: TileType[] = v[i];
             for (let j = 0; j < map.length; j++) {
-                let step: Gird = new Gird(cc.v2(j, i), v[i][j]);
+                let step: Gird = new Gird(cc.v2(j, i), v[i][j].type);
                 this._mapVo[i].push(step);
             }
         }
@@ -157,7 +157,10 @@ export default class Astar_s {
                         continue;
                     let gird: Gird = this._mapVo[i][j];
                     // 跳过不可通行点
-                    if (gird.GirdType === MapType.NotCorss) 
+                    if (gird.GirdType === Tile.blank ||
+                        gird.GirdType === Tile.wall  || 
+                        gird.GirdType === Tile.door
+                        ) 
                         continue;
                     let moveConst: number = this._constMove(g, gird);
                     g.neighbours.push(new Neighbour(gird, moveConst));
@@ -173,7 +176,10 @@ export default class Astar_s {
                         continue;
                     let gird: Gird = this._mapVo[i][j];
                     // 跳过不可通行点
-                    if (gird.GirdType === MapType.NotCorss) 
+                    if (gird.GirdType === Tile.blank ||
+                        gird.GirdType === Tile.wall  || 
+                        gird.GirdType === Tile.door
+                        ) 
                         continue;
                     let moveConst: number = this._constMove(g, gird);
                     g.neighbours.push(new Neighbour(gird, moveConst));

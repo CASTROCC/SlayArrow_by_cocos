@@ -1,11 +1,11 @@
 /*
 * @Author: superman 
 * @Date: 2018-03-26 15:54:19 
-* @Desc: 事件管理器 
+* @Desc: 资源管理 
 */
-import G from "./G";
 import { IResourceManager } from "./Interface/IResourceManager";
 import { SingleBase } from "../Utils/SingleBase";
+import TimerManager from "./TimerManager";
 
 export enum loadingType
 {
@@ -139,7 +139,7 @@ export default class ResourceManager extends SingleBase implements IResourceMana
             this._AssetsRef[item] ? ++this._AssetsRef[item] : this._AssetsRef[item] = 1;    
         });
         if (Object.keys(this._AssetsRef).length != 0)
-            G.TimerMgr.doTimer(ResourceManager.DealInterval, 0, this._dealAssets, this);
+            TimerManager.ins().doTimer(ResourceManager.DealInterval, 0, this._dealAssets, this);
         // if (this._loadingType === loadingType.Panel || this._loadingType === loadingType.Circle)
             // TODO
         if (this._completeHandler) 

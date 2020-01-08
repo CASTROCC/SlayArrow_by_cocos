@@ -1,15 +1,8 @@
 import GameUtils from "../../Core/Utils/GameUtils";
-import G from "../../Core/Manager/G";
 import MapConfig from "./MapConfig";
 import { BaseObj } from "../Obj/BaseObj";
-import { TimerHandler } from "../../Core/Manager/TimerManager";
+import { TileType, Tile } from "../../Core/Dungeon/DungeonFactory";
 
-export enum MapType {
-    NotCorss = 0,
-    Start ,
-    End ,    
-    Cross
-}
 // 用于表现地图
 export class Map extends BaseObj {
 
@@ -24,7 +17,7 @@ export class Map extends BaseObj {
         this.y = 0;
     }
     
-    public Init(mazeData: number[][], mapRes?: cc.Prefab[]) {
+    public Init(mazeData: TileType[][], mapRes?: cc.Prefab[]) {
         if (mapRes && mapRes.length)
             this._GirdType = mapRes;
          
@@ -73,13 +66,19 @@ export class Map extends BaseObj {
         let width: number = mazeData[0].length;
         let height: number = mazeData.length;
 
-        let type: MapType;
+        let type: Tile;
+        let tile: TileType;
         for (let i = 0; i < height; i++) {
             for (let j = 0; j < width; j++) {
-                type = mazeData[i][j];
-                this.addChild(this.createGird(type, j, i));
+                tile = mazeData[i][j];
+                if (tile !== null) {
+                    type = mazeData[i][j].type; 
+                    if (type === Tile.blank)
+                        continue;
+                    this.addChild(this.createGird(type, j, i));
+                }
             }
-        }
+        } 
 
         this.setContentSize(cc.size(mazeData[0].length * MapConfig.GirdWidth ,mazeData.length * MapConfig.GirdHeight));
     }
@@ -92,16 +91,19 @@ export class Map extends BaseObj {
     
     /// TODO
     /// assetsManager
-    private createGird(val: MapType, w_Pos: number, h_Pos: number): cc.Node {  
+    private createGird(val: Tile, w_Pos: number, h_Pos: number): cc.Node {  
         // let node: BaseObj = new BaseObj(); 
         // let sprite: cc.Sprite = node.addComponent(cc.Sprite);
         let node: cc.Node;
-        if(val === MapType.Cross || val === MapType.Start || val === MapType.End ) node = cc.instantiate(this._GirdType[1])
-            // sprite.spriteFrame = this._GirdType[1];
-            
-        else if(val === MapType.NotCorss ) node = cc.instantiate(this._GirdType[0]);
-            // sprite.spriteFrame = this._GirdType[0];
 
+        
+        // if(val === MapType.Cross || val === MapType.Start || val === MapType.End ) node = cc.instantiate(this._GirdType[1])
+        //     // sprite.spriteFrame = this._GirdType[1];
+            
+        // else if(val === MapType.NotCorss ) node = cc.instantiate(this._GirdType[0]);
+        //     // sprite.spriteFrame = this._GirdType[0];
+        
+        node = cc.instantiate(this._GirdType[0]);
         node.position = GameUtils.TransGirdPosition(w_Pos, h_Pos, MapConfig.GirdWidth, MapConfig.GirdHeight);
         return node;
     }

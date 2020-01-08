@@ -1,8 +1,8 @@
-import G from "./Core/Manager/G";
 import { loadingType } from "./Core/Manager/ResourceManager";
 import MapMgr from "./Game/Map/MapMgr";
 import RoleMgr from "./Game/Obj/RoleMgr";
 import SceneManager from "./Core/Manager/SceneManager";
+import Level from "./Core/Dungeon/level";
 const {ccclass, property} = cc._decorator;
 
 @ccclass
@@ -13,7 +13,7 @@ export default class NewClass extends cc.Component {
 
     start () {
         // G.ResMgr.loadResByUrl(this._Assets, loadingType.None, this.complete.bind(this), this.progress.bind(this));
-        (<SceneManager>G.SceneMgr).Init();
+        (<SceneManager>SceneManager.ins()).Init();
         MapMgr.Ins.InizalizeMaze();
         RoleMgr.Ins.Init();
     }

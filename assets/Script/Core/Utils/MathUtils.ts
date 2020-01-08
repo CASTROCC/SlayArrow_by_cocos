@@ -239,6 +239,17 @@ export default class MathUtils {
     }
 
     /**
+     * 两向量间夹角
+     * @param vec 
+     * @param vec1 
+     */
+    public static getAngleByDot(vec: cc.Vec2, vec1: cc.Vec2): number {
+        vec = vec.normalizeSelf();
+        vec1 = vec1.normalizeSelf();
+        return this.getAngleByRadius(Math.acos(vec1.dot(vec)));
+    }
+
+    /**
      * 获取数组总和
      * @param array 
      */

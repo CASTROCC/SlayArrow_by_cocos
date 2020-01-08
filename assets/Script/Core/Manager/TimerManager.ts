@@ -3,19 +3,22 @@ import MathUtils from "../Utils/MathUtils"
 import { SingleBase } from "../Utils/SingleBase";
 
 export class TimerHandler {
-	/**执行间隔*/
+	/** 执行间隔 */
 	public delay: number = 0;
-	/**是否重复执行*/
+	/** 是否重复执行 */
 	public forever: boolean = false;
-	/**重复执行次数*/
+	/** 重复执行次数 */
 	public repeatCount: number = 0;
-	/**执行时间*/
+	/** 执行时间 */
 	public exeTime: number = 0;
-	/**处理函数*/
+	/** 处理函数 */
 	public method: Function;
-	/**处理函数所属对象*/
+	/** 处理函数所属对象 */
 	public methodObj: any;
-	/**完成处理函数*/
+	/** 处理函数的参数(以数组形式储存) */
+	public methodArgs: Array<any>;
+
+	/** 完成处理函数 */
 	public onFinish: Function;
 	/**完成处理函数所属对象*/
 	public finishObj: any;
@@ -24,6 +27,7 @@ export class TimerHandler {
 	public clear(): void {
 		this.method = null;
 		this.methodObj = null;
+		this.methodArgs = null;
 		this.onFinish = null;
 		this.finishObj = null;
 		this.forever = false;
@@ -87,7 +91,7 @@ export default class TimerManager extends SingleBase{
 		this.nexthandles = null;
 		if (nexthandles && nexthandles.length > 0) {
 			for (let handler of nexthandles) {
-				handler.method.call(handler.methodObj);
+				handler.method.apply(handler.methodObj, handler.methodArgs);
 				this._DeleteHandle(handler);
 			}
 			nexthandles = null;
@@ -98,7 +102,7 @@ export default class TimerManager extends SingleBase{
 		let handler = this._handlers[this._handlers.length - 1];
 		while (handler.exeTime <= this._currTime) {
 			this.currHandler = handler = this._handlers.pop();
-			handler.method.call(handler.methodObj);
+			handler.method.apply(handler.methodObj,handler.methodArgs);
 			currTime = GameUtils.GetTime();
 			handler.exeTime = currTime + handler.delay;
 
@@ -129,7 +133,7 @@ export default class TimerManager extends SingleBase{
 		return false;
 	}
 
-	private create(startTime: number, delay: number, repeat: number, method: Function, methodObj: any,
+	private create(startTime: number, delay: number, repeat: number, method: Function, methodObj: any, methodArgs: Array<any> = [],
 				   onFinish: Function, fobj: any): void {
 		if (delay < 0 || repeat < 0 || method == null) {
 			return;
@@ -141,6 +145,7 @@ export default class TimerManager extends SingleBase{
 		handler.delay = delay;
 		handler.method = method;
 		handler.methodObj = methodObj;
+		handler.methodArgs = methodArgs;
 		handler.onFinish = onFinish;
 		handler.finishObj = fobj;
 		handler.exeTime = startTime + this._currTime;
@@ -156,14 +161,15 @@ export default class TimerManager extends SingleBase{
 	 * @param repeat 执行次数, 0为无限次
 	 * @param method 执行函数
 	 * @param methodObj 执行函数所属对象
+	 * @param methodArgs 函数参数
 	 * @param onFinish 完成执行函数
 	 * @param fobj 完成执行函数所属对象
 	 * @param remove 是否删除已经存在的
 	 *
 	 */
 	public doTimer(delay: number, repeat: number, method: Function, methodObj: any
-		, onFinish: Function = null, fobj: any = null): void {
-		this.create(delay, delay, repeat, method, methodObj, onFinish, fobj);
+		, methodArgs: any = [] ,onFinish: Function = null, fobj: any = null): void {
+		this.create(delay, delay, repeat, method, methodObj, methodArgs, onFinish, fobj);
 	}
 
 	/**
@@ -174,21 +180,23 @@ export default class TimerManager extends SingleBase{
 	 * @param repeat 执行次数, 0为无限次
 	 * @param method 执行函数
 	 * @param methodObj 执行函数所属对象
+	 * @param methodArgs 执行函数参数
 	 * @param onFinish 完成执行函数
 	 * @param fobj 完成执行函数所属对象
 	 * @param remove 是否删除已经存在的
 	 *
 	 */
 	public doTimerDelay(startTime: number, delay: number, repeat: number, method: Function, methodObj: any
-		, onFinish: Function = null, fobj: any = null): void {
-		this.create(startTime, delay, repeat, method, methodObj, onFinish, fobj);
+		, methodArgs: any = [], onFinish: Function = null, fobj: any = null): void {
+		this.create(startTime, delay, repeat, method, methodObj,methodArgs, onFinish, fobj);
 	}
 
 	// 下一帧执行，且只执行一次
-	public doNext(method: Function, methodObj: any) {
+	public doNext(method: Function, methodObj: any, args: Array<any> = []) {
 		let handler: TimerHandler = this._HandlerPool.pop() || new TimerHandler();
 		handler.method = method;
 		handler.methodObj = methodObj;
+		handler.methodArgs = args;
 
 		if (!this.nexthandles)
 			this.nexthandles = [];

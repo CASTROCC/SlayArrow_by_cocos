@@ -1,6 +1,3 @@
-import { MapType } from "../Maze";
-
-
 // export default class Astar {
 
 //     private moveType = AStarMoveType.EIGHT_DIRECTION ;

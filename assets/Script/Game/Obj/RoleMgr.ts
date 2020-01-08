@@ -1,9 +1,7 @@
 import GameUtils from "../../Core/Utils/GameUtils";
-import { loadingType } from "../../Core/Manager/ResourceManager";
-import G from "../../Core/Manager/G";
+import ResourceManager, { loadingType } from "../../Core/Manager/ResourceManager";
 import { BaseObj } from "./BaseObj";
 import MapConfig from "../Map/MapConfig";
-import MathUtils from "../../Core/Utils/MathUtils";
 import SceneManager from "../../Core/Manager/SceneManager";
 import EffectUtils from "../../Core/Utils/EffectUtils";
 import FollowCamera from "../../Core/Utils/FollowCamera";
@@ -31,7 +29,7 @@ export default class RoleMgr {
     private _roleContainer: BaseObj;
 
     private _nowPos: cc.Vec2 = cc.v2(0,1);
-    private _roleSpeed: number = 0.3;
+    private _roleSpeed: number = 0.1;
 
     public static Ins: RoleMgr = new RoleMgr();
 
@@ -60,7 +58,7 @@ export default class RoleMgr {
 
     public Init(): void {
         this.loadRoleAssets();
-        (<SceneManager>G.SceneMgr).BattleLayer.addChild(this._roleContainer);
+        (<SceneManager>SceneManager.ins()).BattleLayer.addChild(this._roleContainer);
     }
 
     public set RoleState(v: RoleState) {
@@ -70,7 +68,7 @@ export default class RoleMgr {
     }
 
     public loadRoleAssets() {
-        G.ResMgr.loadResByDir("Animation/Role/", loadingType.None, (res: any) => {
+        ResourceManager.ins().loadResByDir("Animation/Role/", loadingType.None, (res: any) => {
             for (let i = 0; i < res.length; i++) {
                 const item = res[i];
                 if (item instanceof cc.Prefab) {
@@ -83,7 +81,7 @@ export default class RoleMgr {
             this.RoleState = RoleState.Idle;
             this.nowPos = this._nowPos;
             this._roleContainer.addChild(this._role);
-            (<SceneManager>G.SceneMgr).MapCamera.addComponent(FollowCamera).target = this._role;
+            (<SceneManager>SceneManager.ins()).MapCamera.addComponent(FollowCamera).target = this._role;
         });
     }
 

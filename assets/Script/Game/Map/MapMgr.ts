@@ -1,11 +1,9 @@
 import Astar_s from "../../Astar/A_star_2.0";
-import { Map, MapType } from "./Map";
+import { Map } from "./Map";
 import MapConfig from "./MapConfig";
-import { MazeFactory } from "../../MazeFactory";
-import { loadingType } from "../../Core/Manager/ResourceManager";
-import G from "../../Core/Manager/G";
-import { BaseObj } from "../Obj/BaseObj";
+import ResourceManager, { loadingType } from "../../Core/Manager/ResourceManager";
 import RoleMgr, { RoleState } from "../Obj/RoleMgr";
+import { TileType, DungeonFactory } from "../../Core/Dungeon/DungeonFactory";
 import SceneManager from "../../Core/Manager/SceneManager";
 
 /// 地图代理类 管理地图表现
@@ -13,7 +11,7 @@ import SceneManager from "../../Core/Manager/SceneManager";
 export default class MapMgr {
 
     private _Map: Map;
-    private _SourceData: number[][];
+    private _SourceData: TileType[][];
     private _Astar: Astar_s;
 
     constructor() {
@@ -31,7 +29,7 @@ export default class MapMgr {
     }
 
     public loadMapRes(): void {
-        G.ResMgr.loadResByDir("Map/1001", loadingType.None, (res: any) => {
+        ResourceManager.ins().loadResByDir("Map/1001", loadingType.None, (res: any) => {
             let temp = [];
             for (const item of res) {
                 if (item instanceof cc.Prefab)
@@ -54,12 +52,12 @@ export default class MapMgr {
         if (MapConfig.MapWidth % 2 == 0) 
             height = MapConfig.MapHeight - 1;
         
-        this._SourceData = MazeFactory.Ins.CreateMaze(width, height);
-        this._Astar.MapVo = this._SourceData;
+        this._SourceData = DungeonFactory.Ins.genertor(width, height);
+        // this._Astar.MapVo = this._SourceData;
         
         this._Map.Init(this._SourceData);
 
-        G.SceneMgr.BattleLayer.addChild(this._Map);
+        SceneManager.ins().BattleLayer.addChild(this._Map);
         this._Map.on(cc.Node.EventType.TOUCH_END, this.clickMap, this);
     }
 
@@ -67,14 +65,14 @@ export default class MapMgr {
 
         let clickPos: cc.Vec2 = e.getLocation();
 
-        let mapPos = G.SceneMgr.ConverToMapPos(clickPos);
+        let mapPos = SceneManager.ins().ConverToMapPos(clickPos);
         let x = Math.floor(mapPos.x / MapConfig.GirdWidth);
         let y = Math.floor(mapPos.y / MapConfig.GirdHeight);
 
-        if(this._SourceData[y][x] === MapType.NotCorss ) {
-            cc.error("can't find road.");
-            return ;
-        }
+        // if(this._SourceData[y][x] === MapType.NotCorss ) {
+        //     cc.error("can't find road.");
+        //     return ;
+        // }
         let Path: cc.Vec2[] = this._Astar.Search(RoleMgr.Ins.nowPos, cc.v2(x, y));
         if(Path.length === 0) {
             cc.error("can't find road.");
