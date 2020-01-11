@@ -3,6 +3,10 @@ import { Miner } from "../../Entity/Miner";
 import { LoncationType } from "../../Config/LoncationType";
 import { EnterMineAndDigForNugget } from "./EnterMineAndDigForNugget";
 import { MsgInfo } from "../../Message/MsgInfo";
+import { MessageDispatcher } from "../../Message/MessageDispatcher";
+import { MessageType } from "../../Message/MessageType";
+import { EntityConfig } from "../../Config/EntityConfig";
+import { DinnerState } from "../CommonState/DinnerState";
 
 export class GoHomeAndSleepReset implements IState{
 
@@ -14,6 +18,10 @@ export class GoHomeAndSleepReset implements IState{
             // 如果人物(进入此状态前)不在家中，则人物移动至家里
             console.log(`${Entity.EntityName}不在家中， 正在移动至家里. 处于: OnEnter`);
             Entity.Location = LoncationType.Home;
+
+            // 告诉妻子，矿工回家了
+            MessageDispatcher.Instance.DispatchMessage(Entity.EntityId, EntityConfig.Women, MessageType.Hi_Baby_IamGohome, null, -1);
+            console.log(`${Entity.EntityName}告诉妻子，他回家啦.~`);
         }
     }
 
@@ -52,6 +60,12 @@ export class GoHomeAndSleepReset implements IState{
 
     /** 在家中接受到消息 */
     onMessage(Entity: Miner, msgInfo: MsgInfo): boolean {
+        if (msgInfo) {
+            if (msgInfo.MsgType === MessageType.Eat_Dinner) {
+                Entity.StateMachine.ChangeState(DinnerState.Instance);
+                return true;
+            }
+        }
         return void 0;
     }
 }

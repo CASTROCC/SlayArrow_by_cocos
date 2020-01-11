@@ -1,8 +1,6 @@
 import { BaseGameEntity } from "./BaseGameEntity";
-import { IState } from "../State/IState";
 import { LoncationType } from "../Config/LoncationType";
 import { EntityConfig, MinerConfig } from "../Config/EntityConfig";
-import { GoHomeAndSleepReset } from "../State/MinerState/GoHomeAndSleepReset";
 import { StateMachine } from "../State/StateMachine";
 import { EnterMineAndDigForNugget } from "../State/MinerState/EnterMineAndDigForNugget";
 import { MinerGlobalState } from "../State/MinerState/MinerGlobalState";
@@ -139,7 +137,7 @@ export class Miner extends BaseGameEntity {
     /** 更新矿工当前饥渴值 */
     public updateMineralThirst(): void {
         this.m_Thirst -= 4;
-        this.m_GoldGarried -= 1;
+        // this.m_GoldGarried -= 1;
     }
 
     /** 矿工是否已经吃饱喝足 */

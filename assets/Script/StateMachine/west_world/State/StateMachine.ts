@@ -59,11 +59,11 @@ export class StateMachine extends IStateMachine{
     /// 接受到消息
     public HandleMessage(msgInfo: MsgInfo): boolean {
         // 如果是在当前状态逻辑下处理该消息(并成功完成消息逻辑)
-        if (this.CurrState && this.CurrState.onMessage(this.m_Entity, msgInfo)) 
+        if (this.m_CurrState && this.m_CurrState.onMessage(this.m_Entity, msgInfo)) 
             return true;
 
         // 全局状态逻辑下完成消息处理
-        if (this.GlobalState && this.GlobalState.onMessage(this.m_Entity, msgInfo))
+        if (this.m_GlobalState && this.m_GlobalState.onMessage(this.m_Entity, msgInfo))
             return true;
             
         return false;

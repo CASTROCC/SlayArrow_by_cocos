@@ -148,7 +148,7 @@ export default class TimerManager extends SingleBase{
 		handler.methodArgs = methodArgs;
 		handler.onFinish = onFinish;
 		handler.finishObj = fobj;
-		handler.exeTime = startTime + this._currTime;
+		handler.exeTime = startTime + delay;
 
 		let index = MathUtils.binSearch(this._handlers, handler, TimerManager.binFunc);
 		this._handlers.splice(index, 0, handler);
@@ -169,7 +169,7 @@ export default class TimerManager extends SingleBase{
 	 */
 	public doTimer(delay: number, repeat: number, method: Function, methodObj: any
 		, methodArgs: any = [] ,onFinish: Function = null, fobj: any = null): void {
-		this.create(delay, delay, repeat, method, methodObj, methodArgs, onFinish, fobj);
+		this.create(GameUtils.GetTime(), delay, repeat, method, methodObj, methodArgs, onFinish, fobj);
 	}
 
 	/**

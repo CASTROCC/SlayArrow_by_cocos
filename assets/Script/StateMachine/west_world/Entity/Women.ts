@@ -3,6 +3,7 @@ import { EntityConfig } from "../Config/EntityConfig";
 import { StateMachine } from "../State/StateMachine";
 import { KeepHouseState } from "../State/WomenState/KeepHouseState";
 import { MsgInfo } from "../Message/MsgInfo";
+import { WomenGlobalState } from "../State/WomenState/WomenGlobalState";
 
 export class Women extends BaseGameEntity {
 
@@ -29,7 +30,7 @@ export class Women extends BaseGameEntity {
 
     /** 想上厕所了吗 */
     public get isWannaToilet(): boolean {
-        return this.m_GotoToiletDeg >= 6;
+        return this.m_GotoToiletDeg >= 10;
     }
 
     /** 不想上厕所了吗 */
@@ -43,6 +44,7 @@ export class Women extends BaseGameEntity {
         this.m_GotoToiletDeg            = 0;
         this.m_StateMachine             = new StateMachine(this);
         this.m_StateMachine.CurrState   = KeepHouseState.Instance;
+        this.m_StateMachine.GlobalState = WomenGlobalState.Instance;
 
         setInterval(() => this.update(), 1000);
     }

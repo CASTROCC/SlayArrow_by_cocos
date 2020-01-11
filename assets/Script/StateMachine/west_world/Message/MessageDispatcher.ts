@@ -9,8 +9,8 @@ export class MessageDispatcher {
     public static Instance: MessageDispatcher = new MessageDispatcher();
 
     private m_Dispatcher(Entity: BaseGameEntity, msgInfo: MsgInfo): void {
-        let recevier = EntityManager.Instance.GetEntityById(msgInfo.Receiver);
-        recevier.HandleMessage(msgInfo);
+        if (Entity) 
+            Entity.HandleMessage(msgInfo);
     }   
 
     public DispatchMessage(senderID: number, recevierID: number, msgType: number, extralInfo: any, delay: number = -1): void {
@@ -19,9 +19,10 @@ export class MessageDispatcher {
         if (delay === -1) {
             this.m_Dispatcher(entity, m_MsgInfo);
         } else if (delay === 0) {
-            (<TimerManager>TimerManager.ins()).doNext(this.m_Dispatcher, this, [m_MsgInfo, entity]);
+            (<TimerManager>TimerManager.ins()).doNext(this.m_Dispatcher, this, [entity, m_MsgInfo]);
         } else {
-            (<TimerManager>TimerManager.ins()).doTimerDelay(Date.now(), delay * 1000, 1, this.m_Dispatcher, this, [entity, MsgInfo]);
+            // TimerManager.ins().doTimerDelay 
+            (<TimerManager>TimerManager.ins()).doTimerDelay(Date.now(), delay * 1000, 1, this.m_Dispatcher, this, [entity, m_MsgInfo]);
         }
     }
     

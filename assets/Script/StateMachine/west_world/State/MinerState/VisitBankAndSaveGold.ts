@@ -4,6 +4,9 @@ import { LoncationType } from "../../Config/LoncationType";
 import { GoHomeAndSleepReset } from "./GoHomeAndSleepReset";
 import { EnterMineAndDigForNugget } from "./EnterMineAndDigForNugget";
 import { MsgInfo } from "../../Message/MsgInfo";
+import { MessageDispatcher } from "../../Message/MessageDispatcher";
+import { EntityManager } from "../../Message/EntityManager";
+import { EntityConfig } from "../../Config/EntityConfig";
 
 export class VisitBankAndSaveGold implements IState{
 
@@ -38,7 +41,7 @@ export class VisitBankAndSaveGold implements IState{
         // 将现金存入银行
         Entity.updateMinerMoneyBank();
 
-        // 如果矿工已时间财富自由
+        // 如果矿工已实现财富自由
         if (Entity.mineralMoneyIsFree) {
             // 则矿工进入回家混吃等死状态
             Entity.StateMachine.ChangeState(GoHomeAndSleepReset.Instance);
