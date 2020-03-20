@@ -30,10 +30,10 @@ export default class MapMgr {
 
     public loadMapRes(): void {
         ResourceManager.ins().loadResByDir("Map/1001", loadingType.None, (res: any) => {
-            let temp = [];
+            let temp = {};
             for (const item of res) {
                 if (item instanceof cc.Prefab)
-                    temp.push(item)
+                    temp[item.name] = item;
             }
             this._Map.GirdType = temp;
         });
@@ -53,9 +53,8 @@ export default class MapMgr {
             height = MapConfig.MapHeight - 1;
         
         this._SourceData = DungeonFactory.Ins.genertor(width, height);
-        // this._Astar.MapVo = this._SourceData;
-        
         this._Map.Init(this._SourceData);
+        this._Astar.MapVo = this._SourceData;
 
         SceneManager.ins().BattleLayer.addChild(this._Map);
         this._Map.on(cc.Node.EventType.TOUCH_END, this.clickMap, this);
@@ -69,10 +68,6 @@ export default class MapMgr {
         let x = Math.floor(mapPos.x / MapConfig.GirdWidth);
         let y = Math.floor(mapPos.y / MapConfig.GirdHeight);
 
-        // if(this._SourceData[y][x] === MapType.NotCorss ) {
-        //     cc.error("can't find road.");
-        //     return ;
-        // }
         let Path: cc.Vec2[] = this._Astar.Search(RoleMgr.Ins.nowPos, cc.v2(x, y));
         if(Path.length === 0) {
             cc.error("can't find road.");
@@ -80,29 +75,5 @@ export default class MapMgr {
         }
         RoleMgr.Ins.EnterState(RoleState.Move, Path);
     }
-
-    // private async moveRes(path: cc.Vec2[]) {
-    //     let pos: cc.Vec2 = path.shift();
-    //     if (!pos) return;
-
-    //     this.isMoving = true ;
-    //     await this.movePosimes(pos);
-
-    //     this.nowPos = pos;
-    //     this.isMoving = false;
-    //     this.moveRes(path);
-    // }
-
-    // private movePosimes(pos: cc.Vec2): Promise<Function> {
-    //     return new Promise((reslove) => {
-    //         let position = cc.v2( this.cross.width * pos.x + this.cross.width / 2, - (this.cross.height * pos.y + this.cross.height / 2) );
-    //         let roleAction = cc.moveTo(this.moveDuration, position)
-    //         let callAction = cc.callFunc(()=>{
-    //                 reslove();
-    //         } , this );
-    //         this.role.runAction(cc.sequence([roleAction, callAction]));
-    //         reslove();
-    //     });
-    // }
 
 }

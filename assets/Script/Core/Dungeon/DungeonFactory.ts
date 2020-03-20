@@ -18,18 +18,24 @@ export class DungeonFactory {
 
     constructor() {}
 
+    private _dungeon: Dungeon;
     public static Ins: DungeonFactory = new DungeonFactory();
 
     public genertor(w: number, h: number): TileType[][] {
         // create a dungeon
-        let dungeon: Dungeon = new Dungeon(w, h);
-        dungeon.generate();
+        this._dungeon = new Dungeon(w, h);
+        this._dungeon.generate();
 
         // // the current collision map for the dungeon
         // this.collisionMap = this.dungeon.getCollisionMap();
 
         // the tiles in the map
-        return dungeon.getFlattenedTiles();
+        return this._dungeon.getFlattenedTiles();
+    }
+
+    public getStair(): cc.Vec2 {
+        let stairs = this._dungeon.getStairs();
+        return cc.v2(stairs.up.x, stairs.up.y);
     }
 
 

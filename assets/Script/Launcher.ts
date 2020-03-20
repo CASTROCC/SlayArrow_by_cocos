@@ -3,6 +3,7 @@ import MapMgr from "./Game/Map/MapMgr";
 import RoleMgr from "./Game/Obj/RoleMgr";
 import SceneManager from "./Core/Manager/SceneManager";
 import Level from "./Core/Dungeon/level";
+import { DungeonFactory } from "./Core/Dungeon/DungeonFactory";
 const {ccclass, property} = cc._decorator;
 
 @ccclass
@@ -16,6 +17,8 @@ export default class NewClass extends cc.Component {
         (<SceneManager>SceneManager.ins()).Init();
         MapMgr.Ins.InizalizeMaze();
         RoleMgr.Ins.Init();
+        //// 生成人物起始坐标
+        RoleMgr.Ins.nowPos = DungeonFactory.Ins.getStair();
     }
 
 

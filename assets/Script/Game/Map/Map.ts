@@ -6,7 +6,7 @@ import { TileType, Tile } from "../../Core/Dungeon/DungeonFactory";
 // 用于表现地图
 export class Map extends BaseObj {
 
-    private _GirdType: cc.Prefab[];
+    private _GirdType: {[nodeName: string]: cc.Prefab};
 
     constructor() {
         super();
@@ -17,51 +17,9 @@ export class Map extends BaseObj {
         this.y = 0;
     }
     
-    public Init(mazeData: TileType[][], mapRes?: cc.Prefab[]) {
+    public Init(mazeData: TileType[][], mapRes?: {[nodeName: string]: cc.Prefab}) {
         if (mapRes && mapRes.length)
             this._GirdType = mapRes;
-         
-        
-        // let widthMid: number = (mazeData[0].length + 1) >> 1;
-        // let heightMid: number = (mazeData.length + 1) >> 1;
-
-        // TODO 暂时只考虑地图格子为奇数的情况
-        // let center: cc.Node = this.createGird(mazeData[heightMid][widthMid], 0, 0);
-        // this.addChild(center);
-        // for (let i = 1; i < heightMid - 1; i++) {
-        //     let gu = this.createGird(mazeData[heightMid - i][0], 0, i);
-        //     let gd = this.createGird(mazeData[heightMid + i][0], 0, -i);
-        //     this.addChild(gu);
-        //     this.addChild(gd);
-        // }
-
-        // for (let i = 1; i < widthMid - 1; i++) {
-        //     let gu = this.createGird(mazeData[0][widthMid + i], i, 0);
-        //     let gd = this.createGird(mazeData[0][widthMid - i], -i, 0);
-        //     this.addChild(gu);
-        //     this.addChild(gd);
-        // }
-
-        // for (let i = 1; i < heightMid - 1; i++) {
-        //     for (let j = 1; j < widthMid - 1; j++) {
-        //         let lDown: MapType = mazeData[heightMid + i][widthMid - j];
-        //         let lUp: MapType = mazeData[heightMid - i][widthMid - j];
-        //         let rDown: MapType = mazeData[heightMid + i][widthMid + j];
-        //         let rUp: MapType = mazeData[heightMid - i ][widthMid + j];
-                
-        //         let ldNode: cc.Node = this.createGird(lDown, -j, -i);
-        //         let luNode: cc.Node = this.createGird(lUp, -j, i);
-        //         let rdNode: cc.Node = this.createGird(rDown, j, -i);
-        //         let ruNode: cc.Node = this.createGird(rUp, j, i);
-
-        //         this.addChild(ldNode);
-        //         this.addChild(luNode);
-        //         this.addChild(rdNode);
-        //         this.addChild(ruNode);
-
-        //     }
-            
-        // }
 
         let width: number = mazeData[0].length;
         let height: number = mazeData.length;
@@ -76,6 +34,8 @@ export class Map extends BaseObj {
                     if (type === Tile.blank)
                         continue;
                     this.addChild(this.createGird(type, j, i));
+                } else {
+                    throw("地图数据错误。");
                 }
             }
         } 
@@ -83,27 +43,18 @@ export class Map extends BaseObj {
         this.setContentSize(cc.size(mazeData[0].length * MapConfig.GirdWidth ,mazeData.length * MapConfig.GirdHeight));
     }
 
-    public set GirdType(v: cc.Prefab[]) {
+    public set GirdType(v: {[nodeName: string]: cc.Prefab}) {
         if (!v && !v.length) 
             return;
         this._GirdType = v;
     }
     
-    /// TODO
+    /// TODO 地图内存优化管理
     /// assetsManager
     private createGird(val: Tile, w_Pos: number, h_Pos: number): cc.Node {  
-        // let node: BaseObj = new BaseObj(); 
-        // let sprite: cc.Sprite = node.addComponent(cc.Sprite);
         let node: cc.Node;
-
         
-        // if(val === MapType.Cross || val === MapType.Start || val === MapType.End ) node = cc.instantiate(this._GirdType[1])
-        //     // sprite.spriteFrame = this._GirdType[1];
-            
-        // else if(val === MapType.NotCorss ) node = cc.instantiate(this._GirdType[0]);
-        //     // sprite.spriteFrame = this._GirdType[0];
-        
-        node = cc.instantiate(this._GirdType[0]);
+        node = cc.instantiate(this._GirdType[(val).toString()]);
         node.position = GameUtils.TransGirdPosition(w_Pos, h_Pos, MapConfig.GirdWidth, MapConfig.GirdHeight);
         return node;
     }

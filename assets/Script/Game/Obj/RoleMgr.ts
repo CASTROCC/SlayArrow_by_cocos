@@ -45,7 +45,6 @@ export default class RoleMgr {
         this._role = new BaseObj();
        
     }
- 
 
     public get nowPos(): cc.Vec2 {
         return this._nowPos;
@@ -77,7 +76,6 @@ export default class RoleMgr {
                 }
             }
 
-            ///
             this.RoleState = RoleState.Idle;
             this.nowPos = this._nowPos;
             this._roleContainer.addChild(this._role);

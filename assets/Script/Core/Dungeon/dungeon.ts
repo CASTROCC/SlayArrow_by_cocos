@@ -1,5 +1,6 @@
 import Room from "./room";
 import tiles from "./tiles";
+import { Tile } from "./DungeonFactory";
 
 const { floor, random, min, max } = Math;
 
@@ -24,13 +25,22 @@ export default class Dungeon {
   constructor(width, height) {
     this.size = { x: width, y: height };
 
-    this.minRoomSize = 5;
-    this.maxRoomSize = 15;
-    this.maxNumRooms = 50;
-    this.maxRoomArea = 150;
+    // this.minRoomSize = 5;
+    // this.maxRoomSize = 15;
+    // this.maxNumRooms = 50;
+    // this.maxRoomArea = 150;
 
-    this.addStairsUp = true;
-    this.addStairsDown = true;
+    // this.addStairsUp = true;
+    // this.addStairsDown = true;
+
+    this.minRoomSize = 3;
+    this.maxRoomSize = 9;
+    this.maxNumRooms = 10;
+    this.maxRoomArea = 20;
+
+
+    this.addStairsUp = false;
+    this.addStairsDown = false;
 
     this.rooms = [];
     this.roomGrid = [];
@@ -116,7 +126,9 @@ export default class Dungeon {
     for (let y = 0; y < this.size.y; y++) {
       tiles[y] = Array(this.size.x);
       for (let x = 0; x < this.size.x; x++) {
-        tiles[y][x] = null;
+        tiles[y][x] = {
+          type: Tile.blank
+        };
       }
     }
 
@@ -128,10 +140,7 @@ export default class Dungeon {
           // no need to make objects for blank tiles
           if (r.tiles[y][x] !== 0) {
             // the tiles we give back are objects with some extra data
-            tiles[y + r.pos.y][x + r.pos.x] = {
-              type: r.tiles[y][x],
-              hasBeenSeen: false,
-            };
+            tiles[y + r.pos.y][x + r.pos.x].type = r.tiles[y][x];
           }
         }
       }

@@ -86,11 +86,42 @@ export class Gird {
         console.error("postion must be cc.vec2");
     }
     
+
+    /**
+     * 比对两格子坐标是否相等
+     * @param other 
+     */
     public equalTo(other: Gird) {
         if (other instanceof Gird) {
             return this._position.equals(other.position);
         }
         return false;
+    }
+
+    /**
+     * 坐标是否映射到格子本身
+     * @param i 
+     * @param j 
+     */
+    public isMapingSelf(i: number, j: number): boolean {
+        return this.position.x === j && this.position.y === i;
+    }
+
+    /**
+     * 当前格子是否可以通行
+     */
+    public isGirdNotCross(): boolean {
+        return this._GirdType === Tile.blank || this._GirdType === Tile.wall || this._GirdType === Tile.door;
+        // return this._GirdType !== Tile.floor;
+    }
+
+    /**
+     * 坐标是否与格子垂直（即在同一垂直线上）
+     * @param i 
+     * @param j 
+     */
+    public isSameLineWithGird(i: number, j: number): boolean {
+        return this.position.x === j || this.position.y === i;
     }
 }
 
@@ -153,36 +184,30 @@ export default class Astar_s {
             for (let i = startY; i <= endY; i++) {
                 for (let j = startX; j <= endX; j++) {
                     // 跳过自身
-                    if (g.position.x === j && g.position.y === i) 
+                    if (g.isMapingSelf(i, j)) 
                         continue;
-                    let gird: Gird = this._mapVo[i][j];
+                    let neighbour: Gird = this._mapVo[i][j];
                     // 跳过不可通行点
-                    if (gird.GirdType === Tile.blank ||
-                        gird.GirdType === Tile.wall  || 
-                        gird.GirdType === Tile.door
-                        ) 
+                    if (neighbour.isGirdNotCross()) 
                         continue;
-                    let moveConst: number = this._constMove(g, gird);
-                    g.neighbours.push(new Neighbour(gird, moveConst));
+                    let moveConst: number = this._constMove(g, neighbour);
+                    g.neighbours.push(new Neighbour(neighbour, moveConst));
                 }
             }
         } else if (this.moveType === SeachType.Four) {
             for (let i = startY; i <= endY; i++) {
                 for (let j = startX; j <= endX; j++) {
                     // 跳过自身
-                    if (g.position.x === j && g.position.y === i) 
+                    if (g.isMapingSelf(i, j)) 
                         continue;
-                    if (!(g.position.x == j || g.position.y == i))
+                    if (!g.isSameLineWithGird(i, j))
                         continue;
-                    let gird: Gird = this._mapVo[i][j];
+                    let neighbour: Gird = this._mapVo[i][j];
                     // 跳过不可通行点
-                    if (gird.GirdType === Tile.blank ||
-                        gird.GirdType === Tile.wall  || 
-                        gird.GirdType === Tile.door
-                        ) 
+                    if (neighbour.isGirdNotCross()) 
                         continue;
-                    let moveConst: number = this._constMove(g, gird);
-                    g.neighbours.push(new Neighbour(gird, moveConst));
+                    let moveConst: number = this._constMove(g, neighbour);
+                    g.neighbours.push(new Neighbour(neighbour, moveConst));
                 }
             }
 
