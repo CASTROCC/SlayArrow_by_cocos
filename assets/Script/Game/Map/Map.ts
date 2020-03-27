@@ -23,7 +23,7 @@ export class Map extends BaseObj {
 
         let width: number = mazeData[0].length;
         let height: number = mazeData.length;
-
+        console.log(mazeData);
         let type: Tile;
         let tile: TileType;
         for (let i = 0; i < height; i++) {
@@ -31,8 +31,8 @@ export class Map extends BaseObj {
                 tile = mazeData[i][j];
                 if (tile !== null) {
                     type = mazeData[i][j].type; 
-                    if (type === Tile.blank)
-                        continue;
+                    // if (type === Tile.blank)
+                    //     continue;
                     this.addChild(this.createGird(type, j, i));
                 } else {
                     throw("地图数据错误。");

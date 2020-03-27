@@ -5,6 +5,7 @@ import ResourceManager, { loadingType } from "../../Core/Manager/ResourceManager
 import RoleMgr, { RoleState } from "../Obj/RoleMgr";
 import { TileType, DungeonFactory } from "../../Core/Dungeon/DungeonFactory";
 import SceneManager from "../../Core/Manager/SceneManager";
+import { test_Data } from "../../Debug/Test_Data";
 
 /// 地图代理类 管理地图表现
 

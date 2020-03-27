@@ -6,7 +6,8 @@ import { Tile, TileType } from "../Core/Dungeon/DungeonFactory";
  * 2. 初始化格子周围节点作为地图数据储存
  * //// TODO
  * 3. 使用双向
- * 4. 检查当前亮点之间是否有需要使用A*的必要
+ * 4. 检查当前两点之间是否有需要使用A*的必要
+ * 4. 折线优化
  */
 
 export enum SeachType {
@@ -111,8 +112,9 @@ export class Gird {
      * 当前格子是否可以通行
      */
     public isGirdNotCross(): boolean {
-        return this._GirdType === Tile.blank || this._GirdType === Tile.wall || this._GirdType === Tile.door;
-        // return this._GirdType !== Tile.floor;
+        return this._GirdType === Tile.blank 
+            || this._GirdType === Tile.wall 
+            // || this._GirdType === Tile.door;
     }
 
     /**
@@ -123,11 +125,16 @@ export class Gird {
     public isSameLineWithGird(i: number, j: number): boolean {
         return this.position.x === j || this.position.y === i;
     }
+
+    public reset() {
+        this._g = this._h = 0;
+        this._last = null;
+    }
 }
 
 export default class Astar_s {
 
-    private moveType = SeachType.Four ;
+    private moveType = SeachType.Eight ;
 
     private _close: Gird[];
     private _open: BinaryHeap<Gird>;
@@ -143,11 +150,11 @@ export default class Astar_s {
 
     constructor() {
         this._open = new BinaryHeap(v => v.f);
+        this._close = [];
     }
 
     public set MapVo(v: TileType[][]) {
         if(!v) return;
-
         this._mapVo = [];
         this._col = v.length;
         this._row = v[0].length;
@@ -174,15 +181,15 @@ export default class Astar_s {
     }
 
     private _initNeighbour(g: Gird): void {
-        let startX: number = Math.max(0, g.position.x - 1);
-        let startY: number = Math.max(0, g.position.y - 1);
-        let endX: number = Math.min(g.position.x + 1, this._row - 1);
-        let endY: number = Math.min(g.position.y + 1, this._col - 1);
+        let left: number = Math.max(0, g.position.x - 1);
+        let bottom: number = Math.max(0, g.position.y - 1);
+        let right: number = Math.min(g.position.x + 1, this._row - 1);
+        let top: number = Math.min(g.position.y + 1, this._col - 1);
 
         g.neighbours = [];
         if (this.moveType === SeachType.Eight) {
-            for (let i = startY; i <= endY; i++) {
-                for (let j = startX; j <= endX; j++) {
+            for (let i = bottom; i <= top; i++) {
+                for (let j = left; j <= right; j++) {
                     // 跳过自身
                     if (g.isMapingSelf(i, j)) 
                         continue;
@@ -195,8 +202,8 @@ export default class Astar_s {
                 }
             }
         } else if (this.moveType === SeachType.Four) {
-            for (let i = startY; i <= endY; i++) {
-                for (let j = startX; j <= endX; j++) {
+            for (let i = bottom; i <= top; i++) {
+                for (let j = left; j <= right; j++) {
                     // 跳过自身
                     if (g.isMapingSelf(i, j)) 
                         continue;
@@ -223,10 +230,11 @@ export default class Astar_s {
 
     public Search(start: cc.Vec2, finish: cc.Vec2): cc.Vec2[] {
         let s: number = Date.now();
-        this._open.Clear();
-        this._close = [];
+        this.clear();
         let paths = []; 
         let currentStep: Gird = this._GetInitizalGird(start.x, start.y);
+        // console.log("start step: ", currentStep);
+        // console.log("end step: ", this._mapVo[finish.y][finish.x]);
         while (currentStep) {
             this._close.push(currentStep);
             // 找到终点
@@ -236,27 +244,29 @@ export default class Astar_s {
                     paths.unshift(tmpStep.position);
                     tmpStep = tmpStep.parent;
                 } while (tmpStep);
-                this._close = [];
-                this._open.Clear();
+                this.clear();
                 break;
             }
             let neighbours: Neighbour[] = currentStep.neighbours;
             for (let i = neighbours.length - 1; i >= 0; --i) {
-                let gird = neighbours[i].Gird;
-                if (this._close.indexOf(gird) === -1) {
+                let neighbours_Gird = neighbours[i].Gird;
+                if (this._close.indexOf(neighbours_Gird) === -1) {
                     let moveConst: number = neighbours[i].Const;
-                    if (!this._open.Contains(gird)) {
-                        gird.parent = currentStep;
-                        gird.g = currentStep.g + moveConst;
-                        let distancePoint = gird.position.sub(finish);
-                        gird.h = Math.abs(distancePoint.x) + Math.abs(distancePoint.y); 
-                        this._open.Insert(gird);
+                    if (!this._open.Contains(neighbours_Gird)) {
+                        neighbours_Gird.parent = currentStep;
+                        neighbours_Gird.g = currentStep.g + moveConst;
+                        let distancePoint = neighbours_Gird.position.sub(finish);
+                        neighbours_Gird.h = Math.abs(distancePoint.x) + Math.abs(distancePoint.y); 
+                        this._open.Insert(neighbours_Gird);
                     } else {
-                        if (currentStep.g + moveConst < gird.g) { 
-                            gird.g = currentStep.g + moveConst; 
+                        if (neighbours_Gird.g > currentStep.g + moveConst) {
+                            neighbours_Gird.g = currentStep.g + moveConst; 
+                            neighbours_Gird.parent = currentStep;
+                            this._open.Remove(neighbours_Gird);
+                            this._open.Insert(neighbours_Gird);
                         }
                     }
- 
+                    
                 }
             }
             currentStep = this._open.Pop();
@@ -267,9 +277,20 @@ export default class Astar_s {
 
     private _GetInitizalGird(x: number, y: number) {
         let Gird = this._mapVo[y][x];
-        Gird.g = Gird.h = 0;
-        Gird.parent = null;
         return Gird;
+    }
+
+    private clear() {
+        this._open.Clear((g: Gird) => g.reset());
+        this._clearClose();
+    }
+
+    private _clearClose(): void {
+        let g: Gird;
+        while (this._close.length) {
+            g = this._close.shift();
+            g && g.reset();
+        }
     }
 
 }

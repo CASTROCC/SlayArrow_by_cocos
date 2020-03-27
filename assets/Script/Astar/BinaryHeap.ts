@@ -1,3 +1,5 @@
+import { Gird } from "./A_star_2.0";
+
 /**
  * @anthor superman
  * @desc 二叉堆(小顶堆)
@@ -12,6 +14,16 @@ export class BinaryHeap<T>{
         this._getCompareFunc = compareFunc;
     }
 
+    /** 冒泡 */
+    public Bubble(index: number) {
+        this._bubble(index);
+    }
+
+    /** 下沉 */
+    public Down(index: number) {
+        this._down(index);
+    }
+
     /**
      * 小顶堆的向上插入, 从index位置向上遍历
      * @param idx 
@@ -21,7 +33,7 @@ export class BinaryHeap<T>{
         let childIndex: number = idx;
         let parentIndex: number = (childIndex - 1) >> 1;
         while (parentIndex >= 0 ) { 
-            if (this._getCompareFunc(this._heap[parentIndex]) < this._heap[childIndex]) 
+            if (this._getCompareFunc(this._heap[parentIndex]) < this._getCompareFunc(this._heap[childIndex])) 
                 break;
             else {
                 // 交换位置
@@ -90,9 +102,7 @@ export class BinaryHeap<T>{
     }
 
 
-    /**
-     * 从头部取出一个元素
-     */
+    /** 从头部取出一个元素 */
     public Pop(): T {
         let result: T =  this._heap[0];
         let end: T = this._heap.pop();
@@ -104,9 +114,7 @@ export class BinaryHeap<T>{
         return result;
     }
 
-    /**
-     * 获取一个头部元素的值
-     */
+    /** 获取一个头部元素的值 */
     public Peek(): T {
         if (this.Size) 
             return this._heap[0];
@@ -119,7 +127,7 @@ export class BinaryHeap<T>{
      */
     public Remove(value: T): boolean {
         let i: number = this._heap.indexOf(value);
-        if (-1 != i) {
+        if (-1 === i) {
             return false;
         }
 
@@ -129,13 +137,17 @@ export class BinaryHeap<T>{
         return true;
     }
 
-    /**
-     * 清除所有数据
-     */
-    public Clear(): void {
-        do 
-            this._heap.shift();
-        while(this.Size > 0)
+    /** 清除所有元素 */
+    public Clear(onRelease?: (val: T) => void): void {        
+        while(this.Size > 0) {
+            let t = this._heap.shift();
+            onRelease && onRelease(t);
+        }
+    }
+
+    /** 查找元素 */
+    public Find(val: T): number {
+        return this._heap.indexOf(val);
     }
 
 

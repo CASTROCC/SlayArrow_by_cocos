@@ -4,6 +4,8 @@ import RoleMgr from "./Game/Obj/RoleMgr";
 import SceneManager from "./Core/Manager/SceneManager";
 import Level from "./Core/Dungeon/level";
 import { DungeonFactory } from "./Core/Dungeon/DungeonFactory";
+import { Role } from "./Game/Obj/Role";
+import { test_start } from "./Debug/Test_Data";
 const {ccclass, property} = cc._decorator;
 
 @ccclass

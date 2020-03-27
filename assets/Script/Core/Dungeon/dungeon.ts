@@ -25,22 +25,22 @@ export default class Dungeon {
   constructor(width, height) {
     this.size = { x: width, y: height };
 
-    // this.minRoomSize = 5;
-    // this.maxRoomSize = 15;
-    // this.maxNumRooms = 50;
-    // this.maxRoomArea = 150;
+    this.minRoomSize = 5;
+    this.maxRoomSize = 15;
+    this.maxNumRooms = 50;
+    this.maxRoomArea = 150;
+
+    this.addStairsUp = true;
+    this.addStairsDown = true;
+
+    // this.minRoomSize = 3;
+    // this.maxRoomSize = 9;
+    // this.maxNumRooms = 10;
+    // this.maxRoomArea = 20;
+
 
     // this.addStairsUp = true;
     // this.addStairsDown = true;
-
-    this.minRoomSize = 3;
-    this.maxRoomSize = 9;
-    this.maxNumRooms = 10;
-    this.maxRoomArea = 20;
-
-
-    this.addStairsUp = false;
-    this.addStairsDown = false;
 
     this.rooms = [];
     this.roomGrid = [];
@@ -137,9 +137,12 @@ export default class Dungeon {
       let r = this.rooms[i];
       for (let y = 0; y < r.size.y; y++) {
         for (let x = 0; x < r.size.x; x++) {
-          // no need to make objects for blank tiles
-          if (r.tiles[y][x] !== 0) {
-            // the tiles we give back are objects with some extra data
+          // // no need to make objects for blank tiles
+          // if (r.tiles[y][x] !== 0) {
+          //   // the tiles we give back are objects with some extra data
+          //   tiles[y + r.pos.y][x + r.pos.x].type = r.tiles[y][x];
+          // }
+          if(r.tiles[y][x].type != Tile.blank) {
             tiles[y + r.pos.y][x + r.pos.x].type = r.tiles[y][x];
           }
         }

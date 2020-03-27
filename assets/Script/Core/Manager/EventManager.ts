@@ -1,10 +1,11 @@
+/*
+* @Author: superman 
+* @Date: 2018-03-26 15:54:19 
+* @Desc: 资源管理 
+*/
 import GameUtils from "../Utils/GameUtils";
 import TimerManager from "./TimerManager";
 import { SingleBase } from "../Utils/SingleBase";
-/**
- * created by superman
- * 消息代理及分帧处理类
- */
 export type Event = {
     Func: Function,
     thiz: any,
