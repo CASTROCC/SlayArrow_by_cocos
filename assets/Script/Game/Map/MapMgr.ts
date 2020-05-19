@@ -6,6 +6,8 @@ import RoleMgr, { RoleState } from "../Obj/RoleMgr";
 import { TileType, DungeonFactory } from "../../Core/Dungeon/DungeonFactory";
 import SceneManager from "../../Core/Manager/SceneManager";
 import { test_Data } from "../../Debug/Test_Data";
+import { SilzAstar } from "../../Astar/SilzAstar";
+import { Role } from "../Obj/Role";
 
 /// 地图代理类 管理地图表现
 
@@ -13,11 +15,14 @@ export default class MapMgr {
 
     private _Map: Map;
     private _SourceData: TileType[][];
-    private _Astar: Astar_s;
+    private _Astar: Astar_s | SilzAstar;
+    // private _Astar: Astar;
 
     constructor() {
         this._Map = new Map();
-        this._Astar = Astar_s.ins();
+        // this._Astar = Astar.getInstance();
+        // this._Astar = Astar_s.ins();
+        
 
         // TODO 抽象AssetManager
         this.loadMapRes();
@@ -55,7 +60,9 @@ export default class MapMgr {
         
         this._SourceData = DungeonFactory.Ins.genertor(width, height);
         this._Map.Init(this._SourceData);
-        this._Astar.MapVo = this._SourceData;
+        // this._Astar.MapVo = this._SourceData;
+        this._Astar = new SilzAstar(this._SourceData);
+        // this._Astar.setMapVo(this._SourceData as any);
 
         SceneManager.ins().BattleLayer.addChild(this._Map);
         this._Map.on(cc.Node.EventType.TOUCH_END, this.clickMap, this);
@@ -69,7 +76,7 @@ export default class MapMgr {
         let x = Math.floor(mapPos.x / MapConfig.GirdWidth);
         let y = Math.floor(mapPos.y / MapConfig.GirdHeight);
 
-        let Path: cc.Vec2[] = this._Astar.Search(RoleMgr.Ins.nowPos, cc.v2(x, y));
+        let Path: any[] = (<SilzAstar>this._Astar).find(RoleMgr.Ins.nowPos.x, RoleMgr.Ins.nowPos.y, mapPos.x, mapPos.y);
         if(Path.length === 0) {
             cc.error("can't find road.");
             return ;

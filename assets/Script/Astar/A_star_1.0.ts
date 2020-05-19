@@ -1,10 +1,16 @@
+// import { Gird } from "./A_star_2.0";
+// import { Tile } from "../Core/Dungeon/DungeonFactory";
+
+// enum AStarMoveType {
+//     EIGHT_DIRECTION = 0,
+// }
 // export default class Astar {
 
 //     private moveType = AStarMoveType.EIGHT_DIRECTION ;
 
 //     private _open = [];
 //     private _closed = [];
-//     private _mapVo:number[][] ;
+//     private _mapVo: any[][] ;
     
 //     private static _instance:Astar ;
 //     public static getInstance()
@@ -47,7 +53,7 @@
 //         this._open = []; // 开放列表
 //         let paths = []; // 路径点集合
         
-//         // cc.log('find start: ' + start + ' to: ' + finish);
+//         cc.log('find start: ' + start + ' to: ' + finish);
 //         this._open.push(new Gird(start));
 //         let pathFound = false;
 //         do {
@@ -61,10 +67,10 @@
 //             if (currentStep.position.equals(finish)) {
 //                 // cc.log('finish :P');
 //                 pathFound = true;
-//                 let tmpStep = currentStep; 
+//                 let tmpStep: Gird = currentStep; 
 //                 do { // 将当前路径链表转换为数组
 //                     paths.unshift(tmpStep.position);
-//                     tmpStep = tmpStep.last;
+//                     tmpStep = tmpStep.parent;
 //                 } while (typeof tmpStep !== "undefined");
                 
 //                 this._open = [];
@@ -155,28 +161,28 @@
 
 //         // top
 //         let top = cc.v2(position.x, position.y - 1);
-//         if (this.isArea(top) && this._mapVo[top.y][top.x] === MapType.Cross) { // 0代表可通行
+//         if (this.isArea(top) && (this._mapVo[top.y][top.x].type === Tile.floor || this._mapVo[top.y][top.x].type === Tile.door)) { // 0代表可通行
 //             // cc.log('top: ' + top);
 //             results.push(top);
 //             hasTop = true;
 //         }
 //         // bottom
 //         let bottom = cc.v2(position.x, position.y + 1);
-//         if (this.isArea(bottom) && this._mapVo[bottom.y][bottom.x] === MapType.Cross) {
+//         if (this.isArea(bottom) && (this._mapVo[top.y][top.x].type === Tile.floor || this._mapVo[top.y][top.x].type === Tile.door)) {
 //             // cc.log('bottom: ' + bottom);
 //             results.push(bottom);
 //             hasBottom = true;
 //         }
 //         // left
 //         let left = cc.v2(position.x - 1, position.y);
-//         if (this.isArea(left) && this._mapVo[left.y][left.x] === MapType.Cross) {
+//         if (this.isArea(left) && (this._mapVo[top.y][top.x].type === Tile.floor || this._mapVo[top.y][top.x].type === Tile.door)) {
 //             // cc.log('left: ' + left);
 //             results.push(left);
 //             hasLeft = true;
 //         }
 //         // right
 //         let right = cc.v2(position.x + 1, position.y);
-//         if (this.isArea(right) && this._mapVo[right.y][right.x] === MapType.Cross) {
+//         if (this.isArea(right) && (this._mapVo[top.y][top.x].type === Tile.floor || this._mapVo[top.y][top.x].type === Tile.door)) {
 //             // cc.log('right: ' + right);
 //             results.push(right);
 //             hasRight = true;
@@ -186,7 +192,7 @@
 //             // Top Left
 //             let topLeft = cc.v2(position.x - 1, position.y - 1);
 //             if (this.isArea(topLeft) && hasTop && hasLeft) {
-//                 if (this._mapVo[topLeft.y][topLeft.x] === MapType.Cross) {
+//                 if ((this._mapVo[top.y][top.x].type === Tile.floor || this._mapVo[top.y][top.x].type === Tile.door)) {
 //                     // cc.log('top left: ' + topLeft);
 //                     results.push(topLeft);
 //                 }
@@ -194,7 +200,7 @@
 //             // Top Right
 //             let topRight = cc.v2(position.x + 1, position.y - 1);
 //             if (this.isArea(topRight) && hasTop && hasRight) {
-//                 if (this._mapVo[topRight.y][topRight.x] === MapType.Cross) {
+//                 if ((this._mapVo[top.y][top.x].type === Tile.floor || this._mapVo[top.y][top.x].type === Tile.door)) {
 //                     // cc.log('top right: ' + topRight);
 //                     results.push(topRight);
 //                 }
@@ -202,7 +208,7 @@
 //             // Bottom Left
 //             let bottomLeft = cc.v2(position.x - 1, position.y + 1);
 //             if (this.isArea(bottomLeft) && hasBottom && hasLeft) {
-//                 if (this._mapVo[bottomLeft.y][bottomLeft.x] === MapType.Cross) {
+//                 if ((this._mapVo[top.y][top.x].type === Tile.floor || this._mapVo[top.y][top.x].type === Tile.door)) {
 //                     // cc.log('bttom left: ' + bottomLeft);
 //                     results.push(bottomLeft);
 //                 }
@@ -210,7 +216,7 @@
 //             // Bottom Right
 //             let bottomRight = cc.v2(position.x + 1, position.y + 1);
 //             if (this.isArea(bottomRight) && hasBottom && hasRight) {
-//                 if (this._mapVo[bottomRight.y][bottomRight.x] === MapType.Cross) {
+//                 if ((this._mapVo[top.y][top.x].type === Tile.floor || this._mapVo[top.y][top.x].type === Tile.door)) {
 //                     // cc.log('top right: ' + bottomRight);
 //                     results.push(bottomRight);
 //                 }

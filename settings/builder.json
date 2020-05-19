@@ -1,5 +1,7 @@
 {
-  "excludeScenes": [],
+  "excludeScenes": [
+    "13487ed3-f3e3-4d3a-a4fd-dfc515f5246d"
+  ],
   "orientation": {
     "landscapeLeft": true,
     "landscapeRight": true,
@@ -9,7 +11,7 @@
   "packageName": "org.cocos2d.helloworld",
   "startScene": "58bc62cd-80d3-496a-996d-1cbd7cfe39a4",
   "title": "Maze",
-  "webOrientation": "landscape",
+  "webOrientation": "auto",
   "includeSDKBox": false,
   "inlineSpriteFrames": true,
   "inlineSpriteFrames_native": false,

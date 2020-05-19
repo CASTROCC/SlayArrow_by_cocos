@@ -228,18 +228,19 @@ export default class Astar_s {
             return 1.0;
     }
 
-    public Search(start: cc.Vec2, finish: cc.Vec2): cc.Vec2[] {
+    public Search(start: cc.Vec2, end: cc.Vec2): cc.Vec2[] {
         let s: number = Date.now();
         this.clear();
         let paths = []; 
-        let currentStep: Gird = this._GetInitizalGird(start.x, start.y);
+        let curr_Gird: Gird = this._GetInitizalGird(start.x, start.y);
         // console.log("start step: ", currentStep);
         // console.log("end step: ", this._mapVo[finish.y][finish.x]);
-        while (currentStep) {
-            this._close.push(currentStep);
+        while (curr_Gird) {
+            this._close.push(curr_Gird);
+            
             // 找到终点
-            if (currentStep.position.equals(finish)) {
-                let tmpStep = currentStep; 
+            if (curr_Gird.position.equals(end)) {
+                let tmpStep = curr_Gird; 
                 do {
                     paths.unshift(tmpStep.position);
                     tmpStep = tmpStep.parent;
@@ -247,29 +248,27 @@ export default class Astar_s {
                 this.clear();
                 break;
             }
-            let neighbours: Neighbour[] = currentStep.neighbours;
-            for (let i = neighbours.length - 1; i >= 0; --i) {
-                let neighbours_Gird = neighbours[i].Gird;
-                if (this._close.indexOf(neighbours_Gird) === -1) {
-                    let moveConst: number = neighbours[i].Const;
-                    if (!this._open.Contains(neighbours_Gird)) {
-                        neighbours_Gird.parent = currentStep;
-                        neighbours_Gird.g = currentStep.g + moveConst;
-                        let distancePoint = neighbours_Gird.position.sub(finish);
-                        neighbours_Gird.h = Math.abs(distancePoint.x) + Math.abs(distancePoint.y); 
-                        this._open.Insert(neighbours_Gird);
-                    } else {
-                        if (neighbours_Gird.g > currentStep.g + moveConst) {
-                            neighbours_Gird.g = currentStep.g + moveConst; 
-                            neighbours_Gird.parent = currentStep;
-                            this._open.Remove(neighbours_Gird);
-                            this._open.Insert(neighbours_Gird);
+            let neighbours: Neighbour[] = curr_Gird.neighbours;
+            for (let i = 0; i < neighbours.length; i++) {
+                let ng_Gird: Gird = neighbours[i].Gird;
+                if (this._close.indexOf(ng_Gird) === -1) {
+                    let curr_g = curr_Gird.g + neighbours[i].Const;
+                    let isContain: boolean = this._open.Contains(ng_Gird);
+                    if (!isContain || ng_Gird.g > curr_g) {
+                        ng_Gird.g = curr_g;
+                        let dis = ng_Gird.position.sub(end);
+                        ng_Gird.h = Math.abs(dis.x) + Math.abs(dis.y);
+                        ng_Gird.parent = curr_Gird;
+                        
+                        if (!isContain) {
+                            this._open.Insert(ng_Gird);
+                        } else {
+                            this._open.Bubble(ng_Gird);
                         }
                     }
-                    
                 }
             }
-            currentStep = this._open.Pop();
+            curr_Gird = this._open.Pop();
         }
         console.log(Date.now() - s);
         return paths;

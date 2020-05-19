@@ -1,9 +1,10 @@
-import { Gird } from "./A_star_2.0";
-
-/**
- * @anthor superman
- * @desc 二叉堆(小顶堆)
+/*
+ * @Author: chao.sheng 
+ * @Date: 2020-03-28 12:08:26 
+ * @Last Modified by: chao.sheng
+ * @Last Modified time: 2020-03-28 12:09:28
  */
+import { Gird } from "./A_star_2.0";
 export class BinaryHeap<T>{
 
     private _heap: T[];
@@ -15,13 +16,17 @@ export class BinaryHeap<T>{
     }
 
     /** 冒泡 */
-    public Bubble(index: number) {
-        this._bubble(index);
+    public Bubble(val: T) {
+        let i = this._heap.indexOf(val);
+        if (-1 !== i) 
+            this._bubble(i);
     }
 
     /** 下沉 */
-    public Down(index: number) {
-        this._down(index);
+    public Down(val: T) {
+        let i = this._heap.indexOf(val);
+        if (-1 !== i) 
+            this._down(i);
     }
 
     /**
